@@ -1,29 +1,107 @@
 # pnxzx.github.io
 
-This template should help get you started developing with Vue 3 in Vite.
+## 🌟 项目简介
 
-## Recommended IDE Setup
+这是一个使用现代前端技术栈开发的非官方学校网站，旨在为学生、教师和校友提供信息服务和交流平台。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🚀 技术栈
 
-## Customize configuration
+- **框架**: [Vue3](https://cn.vuejs.org/)
+- **包管理器**: Yarn
+- **构建工具**: Vite
+- **路由**: Vue Router
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 推荐的 IDE 设置
 
-## Project Setup
+推荐使用 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)（并禁用 Vetur）。
 
-```sh
-yarn
+## 📁 项目结构
+
+```
+pnxzx.github.io/
+├── public/                 # 静态资源
+├── src/
+│   ├── assets/            # 资源文件
+│   ├── components/        # 公共组件
+│   ├── pages/             # 页面组件
+│   ├── router/            # 路由配置
+│   ├── App.vue            # 根组件
+│   └── main.js            # 入口文件
+├── package.json           # 项目配置
+├── vite.config.ts         # Vite 配置
+├── jsconfig.json          # TypeScript 配置
+└── yarn.lock              # Yarn 锁文件
 ```
 
-### Compile and Hot-Reload for Development
+## 🛠️ 开发环境设置
 
-```sh
+### 前置要求
+
+- [Node.js](https://nodejs.org/) (版本 16 或更高)
+- Yarn (版本 4.9.1)
+
+### 安装依赖
+
+```bash
+# 克隆项目
+git clone https://github.com/pnxzx/pnxzx.github.io.git
+
+# 进入项目目录
+cd pnxzx.github.io
+
+# 安装依赖
+yarn install
+```
+
+### 编译和热重载以用于开发
+
+```bash
 yarn dev
 ```
 
-### Compile and Minify for Production
+项目将在 `http://localhost:5173` 运行（默认端口）。
 
-```sh
-yarn build
-```
+
+## 📝 功能特性
+
+### 已实现功能
+- [ ] 页面
+
+### 计划功能
+- [ ] 更多页面
+
+## 🌐 部署说明
+
+合并到'master'分支后会自动部署
+
+## 🤝 参与贡献
+
+我们欢迎各种形式的贡献！
+
+### 开发流程
+
+1. Fork 本项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启 Pull Request
+
+### 提交规范
+
+参考文章[使用 commitizen 规范 Git 提交说明](https://zhuanlan.zhihu.com/p/137135338)
+
+## 📧 联系我们
+
+如有问题或建议，请通过以下方式联系：
+
+- 提交 [Issue](https://github.com/pnxzx/pnxzx.github.io/issues)
+- 发送邮件至：lyxyz5223@qq.com
+
+## ⚠️ 免责声明
+
+本项目为非官方网站，与任何教育机构无官方关联。所有信息仅供参考，请以学校官方发布的信息为准。
+
+ 
+---
+
+⭐ 如果这个项目对您有帮助，请给我们一个星标！
