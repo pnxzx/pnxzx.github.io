@@ -1,13 +1,11 @@
 <template>
   <section class="contact">
-    <h2>联系我们</h2>
-    <p>地址：广西平南县教育路1号</p>
-    <p>电话：0775-1234567</p>
-    <p>邮箱：info@pnzx.edu.cn</p>
+    <Disclaimer />
   </section>
 </template>
 
 <script setup>
+import Disclaimer from '../components/Disclaimer.vue'
 </script>
 
 <style scoped>
