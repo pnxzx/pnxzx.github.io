@@ -17,6 +17,6 @@ export default defineConfig({
   },
   base:"/",
   build:{
-    outDir:"gh_pages"
+    outDir:"docs"
   }
 })
