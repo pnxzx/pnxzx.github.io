@@ -25,7 +25,7 @@
       <h1 class="school-title">
         <span class="text-stroke">平南县中学</span>
       </h1>
-      <p class="school-slogan">厚德博学 · 求实创新</p>
+      <p class="school-slogan">塑造一个最好的你</p>
       <button class="cta-button" @click="scrollToContent">
         走进校园 <i class="icon-arrow-down"></i>
       </button>
