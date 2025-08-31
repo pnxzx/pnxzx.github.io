@@ -70,9 +70,9 @@ yarn dev
 ### 计划功能
 - [ ] 更多页面
 
-## 🌐 部署说明
+## 🌐 自动部署
 
-合并到 'master' 分支后会自动部署
+- 主分支(master)更新触发GitHub Action自动部署
 
 ## 🤝 参与贡献
 
@@ -81,14 +81,34 @@ yarn dev
 ### 开发流程
 
 1. Fork 本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
+2. 创建特性分支 
+(`git checkout -b feature/AmazingFeature`)
+3. 提交更改 
+(`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 
+(`git push origin feature/AmazingFeature`)
 5. 开启 Pull Request
 
-### 提交规范
+### Commit规范
+采用[Conventional Commits](https://www.conventionalcommits.org/)标准：
+```
+<type>[optional scope]: <description>
 
-参考文章[使用 commitizen 规范 Git 提交说明](https://zhuanlan.zhihu.com/p/137135338)
+[optional body]
+
+[optional footer]
+```
+
+常用类型：
+- feat: 新功能
+- fix: bug修复
+- docs: 文档变更
+- style: 代码样式
+- refactor: 代码重构
+- test: 测试相关
+- chore: 构建/工具变更
+
+参考文章 [使用 commitizen 规范 Git 提交说明](https://zhuanlan.zhihu.com/p/137135338)
 
 ## 📧 联系我们
 
