@@ -1,70 +1,103 @@
 <template>
-  <!-- 大图展示区 -->
-  <section class="hero-banner">
-    <!-- 响应式图片 + 预加载 -->
-    <picture>
-      <source 
-        media="(max-width: 768px)" 
-        srcset="@/assets/img/SchoolGate.jpg"
-      >
-      <source 
-        media="(min-width: 769px)" 
-        srcset="@/assets/img/SchoolGate.jpg"
-      >
-      <img
-        ref="heroImage"
-        src="@/assets/img/SchoolGate.jpg"
-        alt="平南县中学全景：现代化教学楼与绿树成荫的校园环境"
-        class="hero-image"
-        @load="handleImageLoad"
-      >
-    </picture>
+  <!-- 主视觉区域 -->
+  <transition name="hero-exit">
+    <section 
+      v-if="!contentActive"
+      class="hero-banner"
+      :class="{ 'animate-up': isAnimating }"
+    >
+      <picture>
+        <source 
+          media="(max-width: 768px)" 
+          srcset="@/assets/img/SchoolGate.jpg"
+        >
+        <source 
+          media="(min-width: 769px)" 
+          srcset="@/assets/img/SchoolGate.jpg"
+        >
+        <img
+          src="@/assets/img/SchoolGate.jpg"
+          alt="平南县中学全景"
+          class="hero-image"
+          @load="imageLoaded = true"
+        >
+      </picture>
 
-    <!-- 文字遮罩层 -->
-    <div class="hero-content" :class="{ loaded: imageLoaded }">
-      <h1 class="school-title">
-        <span class="text-stroke">平南县中学</span>
-      </h1>
-      <p class="school-slogan">塑造一个最好的你</p>
-      <button class="cta-button" @click="scrollToContent">
-        走进校园 <i class="icon-arrow-down"></i>
-      </button>
-    </div>
+      <div class="hero-content" :class="{ loaded: imageLoaded }">
+        <h1 class="school-title">
+          <span class="text-stroke">平南县中学</span>
+        </h1>
+        <p class="school-slogan">塑造一个最好的你</p>
+        <button class="cta-button" @click="startAnimation">
+          走进校园 <i class="icon-arrow-down"></i>
+        </button>
+      </div>
+    </section>
+  </transition>
 
-    <!-- 加载指示器 -->
-    <div v-if="!imageLoaded" class="loading-placeholder">
-      <div class="loading-spinner"></div>
-    </div>
-  </section>
+  <!-- 内容区域 -->
+  <transition name="content-enter">
+    <section 
+      v-if="contentActive"
+      class="content-section"
+      ref="contentSection"
+    >
+      
+      <div class="content-wrapper">
+        <button class="back-button" @click="resetAnimation">
+        <i class="icon-arrow-up"></i> 返回
+        </button>
+        <h2>欢迎探索平南县中学</h2>
+        <p>始建于1956年，省级示范性高中...</p>
+        <!-- 其他内容区块 -->
+      </div>
+    </section>
+  </transition>
+
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
-const heroImage = ref(null)
 const imageLoaded = ref(false)
+const isAnimating = ref(false)
+const contentActive = ref(false)
+const contentSection = ref(null)
 
-const handleImageLoad = () => {
-  imageLoaded.value = true
-  // 可以在这里添加GSAP动画触发
+const startAnimation = async () => {
+  // 1. 触发动画状态
+  isAnimating.value = true
+  
+  // 2. 等待动画完成 (800ms)
+  await new Promise(resolve => setTimeout(resolve, 800))
+  
+  // 3. 切换内容显示
+  contentActive.value = true
+  
+  // 4. 确保DOM更新后滚动
+  await nextTick()
+  contentSection.value.scrollIntoView({ 
+    behavior: 'smooth',
+    block: 'start'
+  })
 }
 
-const scrollToContent = () => {
-  window.scrollTo({
-    top: document.documentElement.clientHeight,
-    behavior: 'smooth'
-  })
+const resetAnimation = () => {
+  contentActive.value = false
+  isAnimating.value = false
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
 <style scoped>
-/* 核心样式 */
+/* 主视觉区域样式 */
 .hero-banner {
   position: relative;
   width: 100%;
   height: 100vh;
   max-height: 800px;
   overflow: hidden;
+  transition: all 0.8s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .hero-image {
@@ -72,11 +105,8 @@ const scrollToContent = () => {
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
-  transition: opacity 0.8s ease;
-  opacity: v-bind('imageLoaded ? 1 : 0');
 }
 
-/* 文字内容样式 */
 .hero-content {
   position: absolute;
   top: 0;
@@ -89,29 +119,13 @@ const scrollToContent = () => {
   align-items: center;
   color: white;
   text-align: center;
-  background: rgba(0, 91, 172, 0.4); /* 校徽蓝透明层 */
+  background: rgba(0, 91, 172, 0.4);
   opacity: 0;
   transition: opacity 0.6s ease 0.3s;
 }
 
 .hero-content.loaded {
   opacity: 1;
-}
-
-.school-title {
-  font-size: clamp(2rem, 6vw, 4rem);
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-.text-stroke {
-  -webkit-text-stroke: 1px white;
-  color: transparent;
-}
-
-.school-slogan {
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  margin-bottom: 2rem;
 }
 
 /* 按钮样式 */
@@ -132,29 +146,52 @@ const scrollToContent = () => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 加载动画 */
-.loading-placeholder {
+/* 内容区域样式 */
+.content-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  background: white;
+}
+
+.back-button {
+  position: fixed;
+  top: auto;
+  right: 20px;
+  padding: 8px 16px;
+  background: #005bac;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  z-index: 100;
+  cursor: pointer;
+}
+
+/* 动画效果 */
+.hero-exit-leave-active {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background: #f0f0f0;
-  display: grid;
-  place-items: center;
+  z-index: 10;
 }
 
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(0, 91, 172, 0.2);
-  border-top-color: #005bac;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+.hero-exit-leave-to {
+  opacity: 0;
+  transform: translateY(-30%) scale(0.95);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.content-enter-enter-active,
+.content-enter-leave-active {
+  transition: all 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.content-enter-enter-from {
+  opacity: 0;
+  transform: translateY(20%);
+}
+
+.content-enter-leave-to {
+  opacity: 0;
+  transform: translateY(10%);
 }
 
 /* 响应式调整 */
@@ -163,8 +200,29 @@ const scrollToContent = () => {
     height: 80vh;
   }
   
-  .hero-content {
-    padding: 0 20px;
+  .content-section {
+    padding: 2rem 1rem;
   }
+  
+  .hero-exit-leave-to {
+    transform: translateY(-15%) scale(0.97);
+  }
+}
+
+/* 文本样式 */
+.school-title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px white;
+  color: transparent;
+}
+
+.school-slogan {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  margin-bottom: 2rem;
 }
 </style>
