@@ -1,42 +1,115 @@
 <template>
   <section class="news-list">
-    <h2>新闻动态</h2>
-    <ul>
+    <div class="news-header">
+      <h2>新闻动态</h2>
+      <div class="news-controls">
+        <select v-model="selectedCategory" @change="filterNews">
+          <option value="">全部分类</option>
+          <option v-for="category in categories" :key="category" :value="category">
+            {{ category }}
+          </option>
+        </select>
+        <input 
+          v-model="searchQuery" 
+          @input="searchNews"
+          placeholder="搜索新闻..."
+          class="search-input"
+        />
+      </div>
+    </div>
+    
+    <div v-if="loading" class="loading">
+      加载中...
+    </div>
+    
+    <div v-else-if="filteredNews.length === 0" class="no-news">
+      暂无新闻
+    </div>
+    
+    <div v-else class="news-grid">
       <NewsItem 
-        v-for="item in news" 
-        :key="item.id" 
+        v-for="item in paginatedNews" 
+        :key="item.metadata.slug" 
         :news="item" 
       />
-    </ul>
+    </div>
+    
+    <div v-if="totalPages > 1" class="pagination">
+      <button 
+        v-for="page in totalPages" 
+        :key="page"
+        :class="{ active: page === currentPage }"
+        @click="currentPage = page"
+      >
+        {{ page }}
+      </button>
+    </div>
   </section>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import NewsItem from './NewsItem.vue'
+import NewsGenerator from '../utils/news-generator.js'
 
-const news = [
-  { 
-    id: 1, 
-    title: '2025年秋季开学通知', 
-    date: '2025-08-28',
-    content: '根据教育局安排，我校将于9月1日正式开学...',
-    author: '校办公室'
-  },
-  { 
-    id: 2, 
-    title: '我校学生在数学竞赛中获奖', 
-    date: '2025-07-15',
-    content: '在省级数学竞赛中，我校3名学生获得一等奖...',
-    author: '教务处'
-  },
-  { 
-    id: 3, 
-    title: '校园安全教育活动圆满结束', 
-    date: '2025-06-30',
-    content: '为期两周的安全教育活动取得显著成效...',
-    author: '保卫处'
+const news = ref([])
+const filteredNews = ref([])
+const loading = ref(true)
+const selectedCategory = ref('')
+const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
+
+const categories = computed(() => {
+  const cats = new Set(news.value.map(item => item.metadata.category))
+  return Array.from(cats).sort()
+})
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredNews.value.length / itemsPerPage)
+})
+
+const paginatedNews = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return filteredNews.value.slice(start, end)
+})
+
+async function loadNews() {
+  try {
+    loading.value = true
+    news.value = await NewsGenerator.loadAllNews()
+    filteredNews.value = news.value
+  } catch (error) {
+    console.error('Failed to load news:', error)
+  } finally {
+    loading.value = false
   }
-]
+}
+
+function filterNews() {
+  if (selectedCategory.value) {
+    filteredNews.value = news.value.filter(
+      item => item.metadata.category === selectedCategory.value
+    )
+  } else {
+    filteredNews.value = news.value
+  }
+  currentPage.value = 1
+}
+
+async function searchNews() {
+  if (searchQuery.value.trim()) {
+    filteredNews.value = await NewsGenerator.searchNews(searchQuery.value)
+  } else {
+    filteredNews.value = news.value
+  }
+  currentPage.value = 1
+}
+
+onMounted(() => {
+  loadNews()
+})
 </script>
 
 <style scoped>
@@ -47,15 +120,24 @@ const news = [
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.news-list h2 {
+.news-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.news-header h2 {
   color: #005bac;
-  margin-bottom: 1em;
   font-size: clamp(1.25rem, 2vw, 1.5rem);
   position: relative;
   padding-left: 1rem;
+  margin: 0;
 }
 
-.news-list h2::before {
+.news-header h2::before {
   content: '';
   position: absolute;
   left: 0;
@@ -65,5 +147,76 @@ const news = [
   width: 4px;
   background: currentColor;
   border-radius: 2px;
+}
+
+.news-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.news-controls select,
+.search-input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.search-input {
+  width: 200px;
+}
+
+.news-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.loading,
+.no-news {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.pagination button:hover {
+  background: #f5f5f5;
+}
+
+.pagination button.active {
+  background: #005bac;
+  color: white;
+  border-color: #005bac;
+}
+
+@media (max-width: 768px) {
+  .news-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .news-controls {
+    flex-direction: column;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
 }
 </style>
