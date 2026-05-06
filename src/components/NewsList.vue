@@ -88,23 +88,32 @@ async function loadNews() {
 }
 
 function filterNews() {
-  if (selectedCategory.value) {
-    filteredNews.value = news.value.filter(
-      item => item.metadata.category === selectedCategory.value
-    )
-  } else {
-    filteredNews.value = news.value
-  }
+  applyFilters()
   currentPage.value = 1
 }
 
 async function searchNews() {
-  if (searchQuery.value.trim()) {
-    filteredNews.value = await NewsGenerator.searchNews(searchQuery.value)
-  } else {
-    filteredNews.value = news.value
-  }
+  applyFilters()
   currentPage.value = 1
+}
+
+function applyFilters() {
+  let result = news.value
+
+  if (selectedCategory.value) {
+    result = result.filter(item => item.metadata.category === selectedCategory.value)
+  }
+
+  if (searchQuery.value.trim()) {
+    const term = searchQuery.value.trim().toLowerCase()
+    result = result.filter(item =>
+      item.metadata.title.toLowerCase().includes(term) ||
+      (item.metadata.summary && item.metadata.summary.toLowerCase().includes(term)) ||
+      (item.metadata.tags && item.metadata.tags.some(tag => tag.toLowerCase().includes(term)))
+    )
+  }
+
+  filteredNews.value = result
 }
 
 onMounted(() => {

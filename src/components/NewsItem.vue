@@ -5,16 +5,15 @@
     tabindex="0"
     @keydown.enter="navigateToDetail"
     role="article"
-    :aria-labelledby="'news-title-' + news.id"
+    :aria-labelledby="'news-title-' + news.metadata.slug"
   >
-    <span :id="'news-title-' + news.id" class="news-title">{{ news.title }}</span>
-    <span class="news-date">{{ formatDate(news.date) }}</span>
+    <span :id="'news-title-' + news.metadata.slug" class="news-title">{{ news.metadata.title }}</span>
+    <span class="news-date">{{ formatDate(news.metadata.date) }}</span>
   </li>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
 
 const props = defineProps({
   news: {
@@ -28,7 +27,7 @@ const router = useRouter()
 const navigateToDetail = () => {
   router.push({
     name: 'NewsDetail',
-    params: { id: props.news.id }
+    params: { slug: props.news.metadata.slug }
   })
 }
 
