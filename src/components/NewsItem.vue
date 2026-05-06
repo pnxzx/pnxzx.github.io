@@ -5,9 +5,9 @@
     tabindex="0"
     @keydown.enter="navigateToDetail"
     role="article"
-    aria-labelledby="news-title"
+    :aria-labelledby="'news-title-' + news.id"
   >
-    <span id="news-title" class="news-title">{{ news.title }}</span>
+    <span :id="'news-title-' + news.id" class="news-title">{{ news.title }}</span>
     <span class="news-date">{{ formatDate(news.date) }}</span>
   </li>
 </template>

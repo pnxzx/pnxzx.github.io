@@ -15,11 +15,13 @@
 </script>
 
 <style scoped>
-.school-intro 
-{ 
-  background: #f6f8fa; padding: 2em; border-radius: 8px; margin-bottom: 2em; 
-  font-size: 24px; margin-left: 4em; margin-right: 4em;
-
+.school-intro {
+  /* max-width: 900px; */
+  margin: 0 auto 2em;
+  background: #f6f8fa;
+  padding: 2em;
+  border-radius: 8px;
+  font-size: 1.1rem;
 }
 .school-intro p {
   text-indent: 2em; /* 标准中文缩进*/
