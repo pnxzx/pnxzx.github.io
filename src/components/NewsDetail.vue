@@ -30,7 +30,8 @@ const route = useRoute()
 const currentNews = computed(() => {
   return newsData.find(item => item.id === Number(route.params.id)) || {
     title: '文章不存在',
-    content: '抱歉，您访问的新闻不存在或已被删除'
+    content: '抱歉，您访问的新闻不存在或已被删除',
+    date: ''
   }
 })
 
