@@ -12,10 +12,7 @@
       </div>
     </header>
 
-    <div class="news-content">
-      <p>{{ currentNews.content }}</p>
-      <!-- 实际项目中这里应该是富文本内容 -->
-    </div>
+    <div class="news-content" v-html="currentNews.content"></div>
   </article>
 </template>
 
@@ -87,6 +84,40 @@ const formatDate = (dateString) => {
 
 .news-content {
   line-height: 1.8;
+}
+
+/* 富文本内容排版 */
+.news-content :deep(p) {
+  margin-bottom: 1em;
+}
+
+.news-content :deep(ul),
+.news-content :deep(ol) {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.news-content :deep(li) {
+  margin-bottom: 0.4em;
+}
+
+.news-content :deep(strong) {
+  color: #222;
+}
+
+.news-content :deep(blockquote) {
+  margin: 1em 0;
+  padding: 0.8em 1em;
+  border-left: 4px solid #005bac;
+  background: #f0f6ff;
+  color: #555;
+  border-radius: 0 4px 4px 0;
+  font-style: italic;
+}
+
+.news-content :deep(em) {
+  font-style: italic;
+  color: #444;
 }
 
 @media (max-width: 768px) {

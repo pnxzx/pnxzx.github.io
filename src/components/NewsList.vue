@@ -3,40 +3,55 @@
     <h2>新闻动态</h2>
     <ul>
       <NewsItem 
-        v-for="item in news" 
+        v-for="item in pagedNews" 
         :key="item.id" 
         :news="item" 
       />
     </ul>
+
+    <nav class="pagination" aria-label="新闻分页">
+      <button 
+        class="page-btn" 
+        :disabled="currentPage === 1" 
+        @click="currentPage--"
+        aria-label="上一页"
+      >‹ 上一页</button>
+
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        class="page-btn"
+        :class="{ active: page === currentPage }"
+        @click="currentPage = page"
+        :aria-label="`第${page}页`"
+        :aria-current="page === currentPage ? 'page' : undefined"
+      >{{ page }}</button>
+
+      <button 
+        class="page-btn" 
+        :disabled="currentPage === totalPages" 
+        @click="currentPage++"
+        aria-label="下一页"
+      >下一页 ›</button>
+    </nav>
   </section>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 import NewsItem from './NewsItem.vue'
+import allNews from '@/data/news.json'
 
-const news = [
-  { 
-    id: 1, 
-    title: '2025年秋季开学通知', 
-    date: '2025-08-28',
-    content: '根据教育局安排，我校将于9月1日正式开学...',
-    author: '校办公室'
-  },
-  { 
-    id: 2, 
-    title: '我校学生在数学竞赛中获奖', 
-    date: '2025-07-15',
-    content: '在省级数学竞赛中，我校3名学生获得一等奖...',
-    author: '教务处'
-  },
-  { 
-    id: 3, 
-    title: '校园安全教育活动圆满结束', 
-    date: '2025-06-30',
-    content: '为期两周的安全教育活动取得显著成效...',
-    author: '保卫处'
-  }
-]
+const PAGE_SIZE = 5
+
+const currentPage = ref(1)
+
+const totalPages = computed(() => Math.ceil(allNews.length / PAGE_SIZE))
+
+const pagedNews = computed(() => {
+  const start = (currentPage.value - 1) * PAGE_SIZE
+  return allNews.slice(start, start + PAGE_SIZE)
+})
 </script>
 
 <style scoped>
@@ -66,4 +81,44 @@ const news = [
   background: currentColor;
   border-radius: 2px;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #d0d7de;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #f0f6ff;
+  border-color: #005bac;
+  color: #005bac;
+}
+
+.page-btn.active {
+  background: #005bac;
+  color: #fff;
+  border-color: #005bac;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 </style>
+
