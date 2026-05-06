@@ -3,35 +3,46 @@
     <button class="back-button" @click="router.back()">
       <i class="icon-arrow-left"></i> 返回新闻列表
     </button>
-    
-    <header class="news-header">
-      <h1>{{ currentNews.title }}</h1>
-      <div class="news-meta">
-        <time :datetime="currentNews.date">{{ formatDate(currentNews.date) }}</time>
-        <span>发布部门：{{ currentNews.author }}</span>
-      </div>
-    </header>
 
-    <div class="news-content">
-      <p>{{ currentNews.content }}</p>
-      <!-- 实际项目中这里应该是富文本内容 -->
+    <div v-if="loading" class="news-loading">加载中...</div>
+
+    <div v-else-if="!currentNews" class="news-not-found">
+      <h1>文章不存在</h1>
+      <p>抱歉，您访问的新闻不存在或已被删除。</p>
     </div>
+
+    <template v-else>
+      <header class="news-header">
+        <h1>{{ currentNews.metadata.title }}</h1>
+        <div class="news-meta">
+          <time :datetime="currentNews.metadata.date">{{ formatDate(currentNews.metadata.date) }}</time>
+          <span>发布部门：{{ currentNews.metadata.author }}</span>
+        </div>
+      </header>
+
+      <div class="news-content" v-html="currentNews.content"></div>
+    </template>
   </article>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import newsData from '@/data/news.json' // 或继续使用本地数据
+import NewsGenerator from '@/utils/news-generator.js'
 
 const router = useRouter()
 const route = useRoute()
 
-const currentNews = computed(() => {
-  return newsData.find(item => item.id === Number(route.params.id)) || {
-    title: '文章不存在',
-    content: '抱歉，您访问的新闻不存在或已被删除',
-    date: ''
+const currentNews = ref(null)
+const loading = ref(true)
+
+onMounted(async () => {
+  try {
+    currentNews.value = await NewsGenerator.getNewsBySlug(route.params.slug)
+  } catch (error) {
+    console.error('Failed to load news:', error)
+  } finally {
+    loading.value = false
   }
 })
 
@@ -86,8 +97,69 @@ const formatDate = (dateString) => {
   font-size: 0.9rem;
 }
 
+.news-loading,
+.news-not-found {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
 .news-content {
   line-height: 1.8;
+}
+
+/* Image styles */
+.news-content :deep(figure.news-image) {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.news-content :deep(figure.news-image img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.news-content :deep(figure.news-image figcaption) {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #888;
+}
+
+/* Video embed styles */
+.news-content :deep(.video-embed) {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+}
+
+.news-content :deep(.video-embed iframe),
+.news-content :deep(.video-embed video) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Code block styles */
+.news-content :deep(pre) {
+  background: #f6f8fa;
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.news-content :deep(code) {
+  font-family: monospace;
+  font-size: 0.9em;
 }
 
 @media (max-width: 768px) {

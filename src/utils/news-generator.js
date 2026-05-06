@@ -7,7 +7,7 @@ class NewsGenerator {
   }
 
   async loadAllNews() {
-    const newsModules = import.meta.glob('../content/news/**/*.md', { as: 'raw' })
+    const newsModules = import.meta.glob('../content/news/**/*.md', { query: '?raw', import: 'default' })
     const newsItems = []
 
     for (const [path, loader] of Object.entries(newsModules)) {

@@ -3,21 +3,67 @@ import { marked } from 'marked'
 import matter from 'gray-matter'
 import hljs from 'highlight.js'
 
+function renderVideoEmbed(url) {
+  const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)
+  if (youtubeMatch) {
+    return `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${youtubeMatch[1]}" allowfullscreen loading="lazy" frameborder="0"></iframe></div>\n`
+  }
+
+  const bilibiliMatch = url.match(/bilibili\.com\/video\/(BV[a-zA-Z0-9]+|av\d+)/)
+  if (bilibiliMatch) {
+    return `<div class="video-embed"><iframe src="https://player.bilibili.com/player.html?bvid=${bilibiliMatch[1]}&autoplay=0" allowfullscreen loading="lazy" frameborder="0" scrolling="no"></iframe></div>\n`
+  }
+
+  if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
+    return `<div class="video-embed"><video controls preload="metadata"><source src="${url}" /></video></div>\n`
+  }
+
+  return `<div class="video-embed"><iframe src="${url}" allowfullscreen loading="lazy" frameborder="0"></iframe></div>\n`
+}
+
+// Extension for @[video](url) block syntax
+const videoExtension = {
+  name: 'video',
+  level: 'block',
+  start(src) { return src.indexOf('@[video]') },
+  tokenizer(src) {
+    const match = /^@\[video\]\(([^)]+)\)\n?/.exec(src)
+    if (match) {
+      return { type: 'video', raw: match[0], url: match[1].trim() }
+    }
+  },
+  renderer(token) {
+    return renderVideoEmbed(token.url)
+  }
+}
+
 class MarkdownProcessor {
   constructor() {
     this.setupMarked()
   }
 
   setupMarked() {
-    marked.setOptions({
-      highlight: function(code, lang) {
-        if (lang && hljs.getLanguage(lang)) {
-          return hljs.highlight(code, { language: lang }).value
-        }
-        return hljs.highlightAuto(code).value
+    const renderer = {
+      code({ text, lang }) {
+        const validLang = lang && hljs.getLanguage(lang)
+        const highlighted = validLang
+          ? hljs.highlight(text, { language: lang }).value
+          : hljs.highlightAuto(text).value
+        const langClass = lang ? ` language-${lang}` : ''
+        return `<pre><code class="hljs${langClass}">${highlighted}</code></pre>\n`
       },
+      image({ href, title, text }) {
+        const titleAttr = title ? ` title="${title}"` : ''
+        const caption = title ? `<figcaption>${title}</figcaption>` : ''
+        return `<figure class="news-image"><img src="${href}" alt="${text}"${titleAttr} loading="lazy" />${caption}</figure>\n`
+      }
+    }
+
+    marked.use({
       breaks: true,
-      gfm: true
+      gfm: true,
+      renderer,
+      extensions: [videoExtension]
     })
   }
 

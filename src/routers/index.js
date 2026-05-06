@@ -14,7 +14,7 @@ const routes = [
 
   // 新闻
   {
-    path: '/news/:id',
+    path: '/news/:slug',
     name: 'NewsDetail',
     component: NewsDetail,
     props: true
