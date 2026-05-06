@@ -3,7 +3,31 @@ import { marked } from 'marked'
 import matter from 'gray-matter'
 import hljs from 'highlight.js'
 
-function renderVideoEmbed(url) {
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+function sanitizeUrl(url) {
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      return ''
+    }
+    return url
+  } catch {
+    return ''
+  }
+}
+
+function renderVideoEmbed(rawUrl) {
+  const url = sanitizeUrl(rawUrl)
+  if (!url) return ''
+
   const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/)
   if (youtubeMatch) {
     return `<div class="video-embed"><iframe src="https://www.youtube.com/embed/${youtubeMatch[1]}" allowfullscreen loading="lazy" frameborder="0"></iframe></div>\n`
@@ -15,10 +39,10 @@ function renderVideoEmbed(url) {
   }
 
   if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(url)) {
-    return `<div class="video-embed"><video controls preload="metadata"><source src="${url}" /></video></div>\n`
+    return `<div class="video-embed"><video controls preload="metadata"><source src="${escapeHtml(url)}" /></video></div>\n`
   }
 
-  return `<div class="video-embed"><iframe src="${url}" allowfullscreen loading="lazy" frameborder="0"></iframe></div>\n`
+  return `<div class="video-embed"><iframe src="${escapeHtml(url)}" allowfullscreen loading="lazy" frameborder="0"></iframe></div>\n`
 }
 
 // Extension for @[video](url) block syntax
@@ -53,9 +77,11 @@ class MarkdownProcessor {
         return `<pre><code class="hljs${langClass}">${highlighted}</code></pre>\n`
       },
       image({ href, title, text }) {
-        const titleAttr = title ? ` title="${title}"` : ''
-        const caption = title ? `<figcaption>${title}</figcaption>` : ''
-        return `<figure class="news-image"><img src="${href}" alt="${text}"${titleAttr} loading="lazy" />${caption}</figure>\n`
+        const safeSrc = sanitizeUrl(href) || escapeHtml(href)
+        const safeAlt = escapeHtml(text)
+        const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
+        const caption = title ? `<figcaption>${escapeHtml(title)}</figcaption>` : ''
+        return `<figure class="news-image"><img src="${safeSrc}" alt="${safeAlt}"${titleAttr} loading="lazy" />${caption}</figure>\n`
       }
     }
 
