@@ -47,7 +47,8 @@
 
 <script setup>
 // 话题详情页：正文来自 Discussions REST API（1F），回帖由 giscus 承载
-// giscus mapping=pathname 需要 URL 唯一；本页 URL /forum/:number 全站唯一
+// giscus mapping=title 按 document.title 匹配讨论，因此加载话题后
+// 必须先把 document.title 设为话题标题，giscus 才会绑定到正确的讨论串
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
@@ -87,6 +88,9 @@ async function loadTopic(number) {
     if (res.status === 403) throw new Error('GitHub API 限流中，请稍后再试')
     if (!res.ok) throw new Error(`加载失败 (HTTP ${res.status})`)
     topic.value = await res.json()
+    // giscus mapping=title：先设置 document.title 再渲染 giscus，
+    // 使评论区绑定到与本话题同名的 Discussion
+    document.title = topic.value.title
   } catch (e) {
     error.value = e.message
   } finally {

@@ -15,15 +15,16 @@ import { ref, onMounted } from 'vue'
 const container = ref(null)
 const configured = ref(false)
 
-// TODO: 在 giscus.app 生成配置后填入
+// giscus 配置（https://giscus.app/zh-CN 生成，分类: Q&A）
 const GISCUS_CONFIG = {
   repo: 'pnxzx/pnxzx.github.io',
-  repoId: '', // 例: 'R_kgDOPm-QKw'（giscus.app 生成）
-  category: '论坛',
-  categoryId: '', // 例: 'DIC_kwDOPm-QK84Cxxxx'（giscus.app 生成）
-  mapping: 'pathname',
+  repoId: 'R_kgDOPm-QKw',
+  category: 'Q&A', // 必须与 categoryId 对应的分类名一致，否则 giscus 报错
+  categoryId: 'DIC_kwDOPm-QK84Cuzjw',
+  mapping: 'title', // 按 document.title 匹配/创建讨论 —— 话题页挂载前需把标题设为话题名
   'input-position': 'top',
   lang: 'zh-CN',
+  theme: 'preferred_color_scheme',
 }
 
 onMounted(() => {
@@ -41,7 +42,7 @@ onMounted(() => {
   script.setAttribute('data-reactions-enabled', '1')
   script.setAttribute('data-emit-metadata', '0')
   script.setAttribute('data-input-position', GISCUS_CONFIG['input-position'])
-  script.setAttribute('data-theme', 'light')
+  script.setAttribute('data-theme', GISCUS_CONFIG.theme)
   script.setAttribute('data-lang', GISCUS_CONFIG.lang)
   script.setAttribute('crossorigin', 'anonymous')
   script.async = true
