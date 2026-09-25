@@ -1,29 +1,59 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../pages/Home.vue'
-import About from '../pages/About.vue'
-import News from '../pages/News.vue'
-import Contact from '../pages/Contact.vue'
-import NewsDetail from '@/components/NewsDetail.vue'
 
+// 路由懒加载：按页面分包，减小首屏体积
 const routes = [
-  { path: '/', component: Home },
-  { path: '/about', component: About },
-  { path: '/news', component: News },
-  { path: '/contact', component: Contact },
-
-
-  // 新闻
+  {
+    path: '/',
+    name: 'Home',
+    component: () => import('../pages/Home.vue'),
+    meta: { title: '平南县中学欢迎您' }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('../pages/About.vue'),
+    meta: { title: '学校简介 - 平南县中学' }
+  },
+  {
+    path: '/news',
+    name: 'News',
+    component: () => import('../pages/News.vue'),
+    meta: { title: '新闻动态 - 平南县中学' }
+  },
   {
     path: '/news/:slug',
     name: 'NewsDetail',
-    component: NewsDetail,
+    component: () => import('../components/NewsDetail.vue'),
     props: true
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('../pages/Contact.vue'),
+    meta: { title: '联系我们 - 平南县中学' }
+  },
+  // 捕获所有未匹配的路由 → 404 页面
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../pages/NotFound.vue'),
+    meta: { title: '页面不存在 - 平南县中学' }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  // 路由切换后回到页面顶部（保留浏览器前进/后退的位置还原）
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) return { el: to.hash, behavior: 'smooth' }
+    return { top: 0 }
+  }
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title || '平南县中学'
 })
 
 export default router
