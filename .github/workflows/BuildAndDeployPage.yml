@@ -1,40 +1,65 @@
+name: Build and Deploy to GitHub Pages
 
-name: Deploy to GitHub Pages
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
-  # Allows you to run this workflow manually from the Actions tab
+    branches: ["master"]
   workflow_dispatch:
+
+# 同一分支的旧部署任务自动取消，避免竞争
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  # 所有触发都先构建，保证 PR 也能获得构建验证
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'latest'
+          node-version: '22'
+
       - name: Enable Corepack
         run: corepack enable
-      - name: Uninstall Old Yarn
-        run: npm uninstall -g yarn
+
       - name: Install Yarn 4.9.1
         run: corepack prepare yarn@4.9.1 --activate
+
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
-        working-directory: ./
+
       - name: Build
         run: yarn run build
-        working-directory: ./
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 3
+
+  # 仅 master 分支的 push（即合并后）才部署到生产
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist

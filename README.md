@@ -7,9 +7,10 @@
 ## 🚀 技术栈
 
 - **框架**: [Vue3](https://cn.vuejs.org/)
-- **包管理器**: Yarn
+- **包管理器**: Yarn 4
 - **构建工具**: Vite
 - **路由**: Vue Router
+- **内容处理**: marked + gray-matter + DOMPurify（Markdown 新闻）
 
 ## 推荐的 IDE 设置
 
@@ -22,14 +23,17 @@ pnxzx.github.io/
 ├── public/                 # 静态资源
 ├── src/
 │   ├── assets/            # 资源文件
-│   ├── components/        # 公共组件
+│   ├── components/        # 公共组件（含新闻列表/详情）
+│   ├── content/news/      # 新闻 Markdown 源文件（按 年/月 组织）
 │   ├── pages/             # 页面组件
-│   ├── router/            # 路由配置
+│   ├── routers/           # 路由配置
+│   ├── utils/             # Markdown 解析与新闻加载
 │   ├── App.vue            # 根组件
 │   └── main.js            # 入口文件
+├── index.html             # SPA 入口
 ├── package.json           # 项目配置
-├── vite.config.ts         # Vite 配置
-├── jsconfig.json          # TypeScript 配置
+├── vite.config.js         # Vite 配置
+├── jsconfig.json          # 路径别名配置
 └── yarn.lock              # Yarn 锁文件
 ```
 
@@ -37,8 +41,8 @@ pnxzx.github.io/
 
 ### 前置要求
 
-- [Node.js](https://nodejs.org/) (版本 16 或更高)
-- Yarn (版本 4.9.1)
+- [Node.js](https://nodejs.org/) (版本 20.19 或更高，见 `package.json` 的 `engines`)
+- Yarn (版本 4.9.1，通过 corepack 启用)
 
 ### 安装依赖
 

@@ -3,15 +3,15 @@
     <div class="news-header">
       <h2>新闻动态</h2>
       <div class="news-controls">
-        <select v-model="selectedCategory" @change="filterNews">
+        <select v-model="selectedCategory" @change="applyFilters">
           <option value="">全部分类</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
           </option>
         </select>
-        <input 
-          v-model="searchQuery" 
-          @input="searchNews"
+        <input
+          v-model="searchQuery"
+          @input="applyFilters"
           placeholder="搜索新闻..."
           class="search-input"
         />
@@ -87,23 +87,23 @@ async function loadNews() {
   }
 }
 
-function filterNews() {
-  if (selectedCategory.value) {
-    filteredNews.value = news.value.filter(
-      item => item.metadata.category === selectedCategory.value
-    )
-  } else {
-    filteredNews.value = news.value
-  }
-  currentPage.value = 1
-}
+function applyFilters() {
+  let result = news.value
 
-async function searchNews() {
-  if (searchQuery.value.trim()) {
-    filteredNews.value = await NewsGenerator.searchNews(searchQuery.value)
-  } else {
-    filteredNews.value = news.value
+  if (selectedCategory.value) {
+    result = result.filter(item => item.metadata.category === selectedCategory.value)
   }
+
+  if (searchQuery.value.trim()) {
+    const term = searchQuery.value.trim().toLowerCase()
+    result = result.filter(item =>
+      item.metadata.title.toLowerCase().includes(term) ||
+      (item.metadata.summary && item.metadata.summary.toLowerCase().includes(term)) ||
+      (item.metadata.tags && item.metadata.tags.some(tag => tag.toLowerCase().includes(term)))
+    )
+  }
+
+  filteredNews.value = result
   currentPage.value = 1
 }
 
