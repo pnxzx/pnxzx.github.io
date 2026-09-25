@@ -88,8 +88,11 @@ function sanitizeUrl(url) {
 function resolveAssetUrl(url) {
   const safe = sanitizeUrl(url)
   if (!safe || /^https?:/i.test(safe)) return safe
-  // 指向 src/assets 的站内图片：交给 Vite 处理为打包资源
-  return new URL(`../assets/${safe.replace(/^\/+/, '')}`, import.meta.url).href
+  // 站点绝对路径（public/ 目录，如 /assets/news/...）原样使用——
+  // 不能拼接 ../assets，否则 Vite 构建时动态 URL 解析失败变成 /assets/undefined
+  if (safe.startsWith('/')) return safe
+  // 裸相对路径（如 img/SchoolGate.jpg）指向 src/assets：交给 Vite 处理为打包资源
+  return new URL(`../assets/${safe}`, import.meta.url).href
 }
 
 function renderVideoEmbed(rawUrl) {

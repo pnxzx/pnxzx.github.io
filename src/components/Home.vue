@@ -30,12 +30,12 @@
 
   <!-- 内容区域 -->
   <transition name="content-enter">
-    <section 
+    <section
       v-if="contentActive"
       class="content-section"
       ref="contentSection"
     >
-      
+
       <div class="content-wrapper">
         <button class="back-button" @click="resetAnimation">
           <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
@@ -43,9 +43,60 @@
           </svg>
           返回
         </button>
-        <h2>欢迎探索平南县中学</h2>
-        <p>始建于1956年，省级示范性高中...</p>
-        <!-- 其他内容区块 -->
+
+        <header class="explore-header">
+          <h2>欢迎探索平南县中学</h2>
+          <p class="explore-sub">八榕苍翠 · 百年平中 · 自治区示范性普通高中</p>
+        </header>
+
+        <!-- 探索入口 -->
+        <nav class="explore-grid" aria-label="站内导航">
+          <router-link class="explore-card" to="/news">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="1.4em" height="1.4em">
+                <path d="M4 5h13v14H6a2 2 0 0 1-2-2V5Zm13 3h3v9a2 2 0 0 1-2 2h-1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                <path d="M7 9h7M7 12.5h7M7 16h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="card-title">新闻动态</span>
+            <span class="card-desc">通知公告与校园资讯</span>
+          </router-link>
+
+          <router-link class="explore-card" to="/forum">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="1.4em" height="1.4em">
+                <path d="M4 5h16v11H8l-4 4V5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                <path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="card-title">交流论坛</span>
+            <span class="card-desc">校友与同学的讨论区</span>
+          </router-link>
+
+          <router-link class="explore-card" to="/contact">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="1.4em" height="1.4em">
+                <path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                <path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="card-title">联系我们</span>
+            <span class="card-desc">地址、电话与邮箱</span>
+          </router-link>
+
+          <router-link class="explore-card" to="/about">
+            <span class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="1.4em" height="1.4em">
+                <path d="M12 21s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.4-7 10-7 10Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="card-title">学校简介</span>
+            <span class="card-desc">办学历史与传统</span>
+          </router-link>
+        </nav>
+
+        <!-- 学校简介（复用 About 页的 SchoolIntro 真实内容） -->
+        <SchoolIntro class="explore-intro" />
       </div>
     </section>
   </transition>
@@ -54,11 +105,17 @@
 
 <script setup>
 import { ref, nextTick } from 'vue'
+import SchoolIntro from './SchoolIntro.vue'
 
 const imageLoaded = ref(false)
 const isAnimating = ref(false)
 const contentActive = ref(false)
 const contentSection = ref(null)
+
+// URL 带 #explore 或 ?explore=1 时跳过主视觉直接进入内容区
+if (window.location.hash === '#explore' || new URLSearchParams(window.location.search).has('explore')) {
+  contentActive.value = true
+}
 
 const startAnimation = async () => {
   // 1. 触发动画状态
@@ -150,6 +207,80 @@ const resetAnimation = () => {
   background: white;
 }
 
+.content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 探索入口 */
+.explore-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.explore-header h2 {
+  color: #005bac;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 0.5rem;
+}
+
+.explore-sub {
+  color: #888;
+  font-size: 0.95rem;
+  margin: 0;
+  letter-spacing: 0.1em;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.4rem 0.75rem;
+  background: #f6f8fa;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.explore-card:hover {
+  border-color: rgba(0, 91, 172, 0.35);
+  background: rgba(0, 91, 172, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 91, 172, 0.12);
+}
+
+.card-icon {
+  color: #005bac;
+  margin-bottom: 0.25rem;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.card-desc {
+  color: #999;
+  font-size: 0.8rem;
+}
+
+/* 简介区复用 SchoolIntro，去掉自带的灰底使其融入页面 */
+.explore-intro {
+  background: transparent;
+  padding: 0;
+}
+
 .back-button {
   position: fixed;
   top: auto;
@@ -195,13 +326,23 @@ const resetAnimation = () => {
   .hero-banner {
     height: 80vh;
   }
-  
+
   .content-section {
     padding: 2rem 1rem;
   }
-  
+
   .hero-exit-leave-to {
     transform: translateY(-15%) scale(0.97);
+  }
+
+  .explore-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .explore-grid {
+    grid-template-columns: 1fr;
   }
 }
 
