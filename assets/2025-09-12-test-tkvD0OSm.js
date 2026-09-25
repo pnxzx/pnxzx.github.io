@@ -6,7 +6,7 @@ category: "通知公告"
 tags: ["开学", "通知", "2025"]
 featured: true
 summary: "根据教育局安排，我校将于9月1日正式开学，现将相关事宜通知如下。"
-cover: "/images/news/2025-08-28-autumn-semester/cover.jpg"
+cover: "img/SchoolGate.jpg"
 ---
 
 # 2025年秋季开学通知
@@ -30,6 +30,14 @@ cover: "/images/news/2025-08-28-autumn-semester/cover.jpg"
 2. 暑假作业
 3. 体检报告
 4. 家长联系方式更新表
+
+## 学校风貌
+
+![学校大门](https://placehold.co/800x400?text=平南县中学大门 "平南县中学大门")
+
+## 开学宣传视频
+
+@[video](https://www.bilibili.com/video/BV1xx411c7mD)
 
 ## 注意事项
 
