@@ -27,6 +27,19 @@ const routes = [
     props: true
   },
   {
+    path: '/forum',
+    name: 'Forum',
+    component: () => import('../pages/Forum.vue'),
+    meta: { title: '交流论坛 - 平南县中学' }
+  },
+  {
+    path: '/forum/:number(\\d+)',
+    name: 'ForumTopic',
+    component: () => import('../pages/ForumTopic.vue'),
+    props: true,
+    meta: { title: '话题 - 平南县中学交流论坛' }
+  },
+  {
     path: '/contact',
     name: 'Contact',
     component: () => import('../pages/Contact.vue'),

@@ -9,6 +9,7 @@
         <li><router-link to="/" @click="menuOpen = false">首页</router-link></li>
         <li><router-link to="/about" @click="menuOpen = false">学校简介</router-link></li>
         <li><router-link to="/news" @click="menuOpen = false">新闻动态</router-link></li>
+        <li><router-link to="/forum" @click="menuOpen = false">交流论坛</router-link></li>
         <li><router-link to="/contact" @click="menuOpen = false">联系我们</router-link></li>
       </ul>
     </nav>
