@@ -3,15 +3,15 @@
     <div class="news-header">
       <h2>新闻动态</h2>
       <div class="news-controls">
-        <select v-model="selectedCategory" @change="filterNews">
+        <select v-model="selectedCategory" @change="applyFilters">
           <option value="">全部分类</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
           </option>
         </select>
-        <input 
-          v-model="searchQuery" 
-          @input="searchNews"
+        <input
+          v-model="searchQuery"
+          @input="applyFilters"
           placeholder="搜索新闻..."
           class="search-input"
         />
@@ -87,16 +87,6 @@ async function loadNews() {
   }
 }
 
-function filterNews() {
-  applyFilters()
-  currentPage.value = 1
-}
-
-async function searchNews() {
-  applyFilters()
-  currentPage.value = 1
-}
-
 function applyFilters() {
   let result = news.value
 
@@ -114,6 +104,7 @@ function applyFilters() {
   }
 
   filteredNews.value = result
+  currentPage.value = 1
 }
 
 onMounted(() => {

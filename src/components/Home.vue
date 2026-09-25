@@ -6,22 +6,12 @@
       class="hero-banner"
       :class="{ 'animate-up': isAnimating }"
     >
-      <picture>
-        <source 
-          media="(max-width: 768px)" 
-          srcset="@/assets/img/SchoolGate.jpg"
-        >
-        <source 
-          media="(min-width: 769px)" 
-          srcset="@/assets/img/SchoolGate.jpg"
-        >
-        <img
-          src="@/assets/img/SchoolGate.jpg"
-          alt="平南县中学全景"
-          class="hero-image"
-          @load="imageLoaded = true"
-        >
-      </picture>
+      <img
+        src="@/assets/img/SchoolGate.jpg"
+        alt="平南县中学全景"
+        class="hero-image"
+        @load="imageLoaded = true"
+      >
 
       <div class="hero-content" :class="{ loaded: imageLoaded }">
         <h1 class="school-title">
@@ -29,7 +19,10 @@
         </h1>
         <p class="school-slogan">塑造一个最好的你</p>
         <button class="cta-button" @click="startAnimation">
-          走进校园 <i class="icon-arrow-down"></i>
+          走进校园
+          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+            <path d="M12 16 6 10h12z" fill="currentColor" />
+          </svg>
         </button>
       </div>
     </section>
@@ -45,7 +38,10 @@
       
       <div class="content-wrapper">
         <button class="back-button" @click="resetAnimation">
-        <i class="icon-arrow-up"></i> 返回
+          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+            <path d="M12 8 18 14H6z" fill="currentColor" />
+          </svg>
+          返回
         </button>
         <h2>欢迎探索平南县中学</h2>
         <p>始建于1956年，省级示范性高中...</p>

@@ -1,7 +1,10 @@
 <template>
   <article class="news-detail">
-    <button class="back-button" @click="router.back()">
-      <i class="icon-arrow-left"></i> 返回新闻列表
+    <button class="back-button" @click="goBack">
+      <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+        <path d="M16 4 8 12l8 8z" fill="currentColor" />
+      </svg>
+      返回新闻列表
     </button>
 
     <div v-if="loading" class="news-loading">加载中...</div>
@@ -45,6 +48,15 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+const goBack = () => {
+  // 有浏览历史则返回，直达链接进来时回新闻列表而不是离开站点
+  if (window.history.length > 1 && window.history.state?.back) {
+    router.back()
+  } else {
+    router.replace('/news')
+  }
+}
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('zh-CN', {
