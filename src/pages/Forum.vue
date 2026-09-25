@@ -16,12 +16,7 @@
     <template v-else>
       <div v-if="discussions.length === 0" class="forum-empty">
         暂无话题，快来发起第一个讨论吧！
-        <a
-          class="new-topic-link"
-          :href="newDiscussionUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >前往 GitHub 发起新话题 ↗</a>
+        <router-link class="new-topic-link" to="/forum/new">立即发帖 →</router-link>
       </div>
 
       <ul v-else class="topic-list">
@@ -59,16 +54,20 @@
       </div>
 
       <div class="forum-actions">
+        <router-link class="new-topic-link" to="/forum/new">
+          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          发起新话题
+        </router-link>
+        <span class="action-divider">·</span>
         <a
           class="new-topic-link"
           :href="newDiscussionUrl"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-          在 GitHub 上发起新话题
+          到 GitHub 发起
         </a>
       </div>
     </template>

@@ -33,6 +33,12 @@ const routes = [
     meta: { title: '交流论坛 - 平南县中学' }
   },
   {
+    path: '/forum/new',
+    name: 'ForumNew',
+    component: () => import('../pages/ForumNew.vue'),
+    meta: { title: '发起新话题 - 平南县中学交流论坛' }
+  },
+  {
     path: '/forum/:number(\\d+)',
     name: 'ForumTopic',
     component: () => import('../pages/ForumTopic.vue'),
