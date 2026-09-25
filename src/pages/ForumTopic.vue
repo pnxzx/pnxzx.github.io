@@ -33,10 +33,16 @@
 
       <div class="topic-github-link">
         <a
+          class="external-link"
           :href="topic.html_url"
           target="_blank"
           rel="noopener noreferrer"
-        >在 GitHub 上查看此话题 ↗</a>
+        >
+          在 GitHub 上查看此话题
+          <svg class="icon" viewBox="0 0 24 24" width="0.9em" height="0.9em" aria-hidden="true">
+            <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
       </div>
 
       <!-- 回帖区：giscus（登录 GitHub 后可评论） -->
@@ -225,12 +231,16 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
   font-size: 0.9rem;
 }
 
-.topic-github-link a {
+.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
   color: #005bac;
+  font-weight: 500;
   text-decoration: none;
 }
 
-.topic-github-link a:hover {
+.external-link:hover {
   text-decoration: underline;
 }
 </style>

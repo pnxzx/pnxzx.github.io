@@ -155,7 +155,7 @@ const formatDate = (dateString) => {
 .source-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.3em;
+  gap: 0.35em;
   color: #005bac;
   font-size: 0.9rem;
   font-weight: 500;

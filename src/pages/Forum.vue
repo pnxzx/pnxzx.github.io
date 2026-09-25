@@ -16,7 +16,12 @@
     <template v-else>
       <div v-if="discussions.length === 0" class="forum-empty">
         暂无话题，快来发起第一个讨论吧！
-        <router-link class="new-topic-link" to="/forum/new">立即发帖 →</router-link>
+        <router-link class="new-topic-link" to="/forum/new">
+          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          立即发帖
+        </router-link>
       </div>
 
       <ul v-else class="topic-list">
@@ -67,6 +72,9 @@
           target="_blank"
           rel="noopener noreferrer"
         >
+          <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+            <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
           到 GitHub 发起
         </a>
       </div>
@@ -174,16 +182,13 @@ onMounted(async () => {
 .forum-loading,
 .forum-error,
 .forum-empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #666;
-}
-
-.forum-empty {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
 }
 
 .topic-list {
@@ -288,6 +293,11 @@ onMounted(async () => {
   color: #005bac;
   text-decoration: none;
   font-size: 0.95rem;
+}
+
+.action-divider {
+  color: #ccc;
+  margin: 0 0.25em;
 }
 
 .new-topic-link:hover {
