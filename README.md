@@ -10,7 +10,7 @@
 - **包管理器**: Yarn 4
 - **构建工具**: Vite
 - **路由**: Vue Router
-- **内容处理**: marked + gray-matter + DOMPurify（Markdown 新闻）
+- **内容处理**: marked + 自研 frontmatter 解析 + DOMPurify（Markdown 新闻）
 
 ## 推荐的 IDE 设置
 
@@ -20,7 +20,8 @@
 
 ```
 pnxzx.github.io/
-├── public/                 # 静态资源
+├── public/                 # 静态资源（含导入文章的图片 public/assets/news/）
+├── scripts/                # 工具脚本（公众号导入等）
 ├── src/
 │   ├── assets/            # 资源文件
 │   ├── components/        # 公共组件（含新闻列表/详情）
@@ -70,9 +71,74 @@ yarn dev
 
 ### 已实现功能
 - [X] 页面
+- [X] Markdown 驱动的新闻系统（分类/搜索/图片与视频嵌入）
+- [X] 公众号文章一键导入脚本
 
 ### 计划功能
 - [ ] 更多页面
+
+## 📰 新闻内容管理
+
+新闻以 Markdown 文件形式存放在 `src/content/news/<年>/<月>/` 下，构建时自动打包，无需后端。
+
+### 手动撰写
+
+新建 `.md` 文件（如 `src/content/news/2026/09/开学通知.md`）：
+
+```markdown
+---
+title: "文章标题"
+date: "2026-09-01"
+author: "校办公室"
+category: "通知公告"
+tags: ["标签1", "标签2"]
+featured: false
+summary: "显示在列表页的摘要"
+---
+
+正文支持标准 Markdown，图片和视频语法：
+
+![图片说明](https://example.com/photo.jpg "图注")
+
+@[video](https://www.bilibili.com/video/BVxxxx)   <!-- 自动嵌入播放器 -->
+```
+
+### 从公众号导入
+
+一键抓取公众号文章并转为站内新闻：
+
+```bash
+yarn node scripts/import-wechat.mjs "https://mp.weixin.qq.com/s/xxxx"
+```
+
+**可用选项**：
+
+| 选项 | 说明 |
+|---|---|
+| `--category X` | 设置分类（默认 `转载`） |
+| `--tags a,b` | 逗号分隔的标签（默认 `公众号`） |
+| `--dry-run` | 仅预览解析结果，不写入文件 |
+| `--no-images` | 不下载图片，保留微信外链（不推荐） |
+
+**完整示例**：
+
+```bash
+yarn node scripts/import-wechat.mjs \
+  "https://mp.weixin.qq.com/s/Go9LDui7kx-rsMhVXwxR6g" \
+  --category 通知公告 \
+  --tags 开学,通知
+```
+
+**脚本会自动完成**：
+
+1. 提取标题、公众号名称、发布时间作为元数据
+2. 清理懒加载占位符，将正文转为 Markdown
+3. **下载正文图片到 `public/assets/news/`** 并改写为本地路径（微信图片有防盗链，本地化避免失效）
+4. 在 `src/content/news/<年>/<月>/` 生成 `.md` 文件
+
+导入后运行 `yarn dev` 即可在 `/news` 页面看到新文章。
+
+> ⚠️ 注意：仅用于转载本校官方公众号的公开文章，请尊重原作者版权。
 
 ## 🌐 自动部署
 
