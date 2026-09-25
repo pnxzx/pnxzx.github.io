@@ -30,3 +30,6 @@ coverage
 *.tsbuildinfo
 
 平南县中学模板/
+
+# Yarn local state
+.yarn/install-state.gz
