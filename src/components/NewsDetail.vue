@@ -16,6 +16,7 @@
 
     <template v-else>
       <header class="news-header">
+        <span v-if="currentNews.metadata.source" class="repost-banner">转载文章</span>
         <h1>{{ currentNews.metadata.title }}</h1>
         <div class="news-meta">
           <time :datetime="currentNews.metadata.date">{{ formatDate(currentNews.metadata.date) }}</time>
@@ -24,6 +25,23 @@
       </header>
 
       <div class="news-content" v-html="currentNews.content"></div>
+
+      <footer v-if="currentNews.metadata.source" class="repost-footer">
+        <p class="repost-notice">
+          本文转载自微信公众号「{{ currentNews.metadata.author }}」，版权归原作者所有，内容仅供参考，请以官方发布为准。
+        </p>
+        <a
+          class="source-link"
+          :href="currentNews.metadata.source"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          阅读原文
+          <svg class="icon" viewBox="0 0 24 24" width="0.9em" height="0.9em" aria-hidden="true">
+            <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+      </footer>
     </template>
   </article>
 </template>
@@ -107,6 +125,45 @@ const formatDate = (dateString) => {
   gap: 1rem;
   color: #666;
   font-size: 0.9rem;
+}
+
+.repost-banner {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #005bac;
+  background: rgba(0, 91, 172, 0.08);
+  border-radius: 3px;
+  padding: 0.15em 0.7em;
+  margin-bottom: 0.75rem;
+}
+
+.repost-footer {
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  background: #f7f9fb;
+  border-left: 3px solid #005bac;
+  border-radius: 0 4px 4px 0;
+}
+
+.repost-notice {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: #005bac;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.source-link:hover {
+  text-decoration: underline;
 }
 
 .news-loading,

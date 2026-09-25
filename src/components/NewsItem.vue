@@ -1,5 +1,5 @@
 <template>
-  <li 
+  <li
     class="news-item"
     @click="navigateToDetail"
     tabindex="0"
@@ -7,7 +7,10 @@
     role="article"
     :aria-labelledby="'news-title-' + news.metadata.slug"
   >
-    <span :id="'news-title-' + news.metadata.slug" class="news-title">{{ news.metadata.title }}</span>
+    <span :id="'news-title-' + news.metadata.slug" class="news-title">
+      <span v-if="news.metadata.source" class="repost-badge">转</span>
+      {{ news.metadata.title }}
+    </span>
     <span class="news-date">{{ formatDate(news.metadata.date) }}</span>
   </li>
 </template>
@@ -57,6 +60,18 @@ const formatDate = (dateString) => {
 .news-title {
   font-weight: 500;
   flex: 1;
+}
+
+.repost-badge {
+  display: inline-block;
+  font-size: 0.75em;
+  font-weight: 400;
+  color: #005bac;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 0.35em;
+  margin-right: 0.5em;
+  vertical-align: 1px;
 }
 
 .news-date {
