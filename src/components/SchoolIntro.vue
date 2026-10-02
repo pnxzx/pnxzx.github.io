@@ -18,7 +18,7 @@
 .school-intro {
   /* max-width: 900px; */
   margin: 0 auto 2em;
-  background: var(--color-bg-page);
+  background: #f6f8fa;
   padding: 2em;
   border-radius: 8px;
   font-size: 1.1rem;
@@ -27,6 +27,6 @@
   text-indent: 2em; /* 标准中文缩进*/
   margin-bottom: 1rem; /* 段间距 */
 }
-.school-intro h2 { color: var(--color-primary); margin-bottom: 1px;}
-.school-intro h3 { color: var(--color-primary); margin-top: 1rem; }
+.school-intro h2 { color: #005bac; margin-bottom: 1px;}
+.school-intro h3 { color: #005bac; margin-top: 1rem; }
 </style>
