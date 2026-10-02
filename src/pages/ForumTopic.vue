@@ -133,7 +133,7 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
   gap: 0.4em;
   padding: 0.5rem 1rem;
   margin-bottom: 1.5rem;
-  background: #f5f5f5;
+  background: var(--color-bg-soft);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -141,25 +141,25 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 }
 
 .back-button:hover {
-  background: #eee;
+  background: var(--color-border);
 }
 
 .topic-loading,
 .topic-error {
   text-align: center;
   padding: 3rem 1rem;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .topic-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .topic-header h1 {
   font-size: clamp(1.4rem, 3vw, 1.8rem);
-  color: #333;
+  color: var(--color-text-strong);
   margin: 0 0 0.75rem;
 }
 
@@ -167,7 +167,7 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #666;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   flex-wrap: wrap;
 }
@@ -179,7 +179,7 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 }
 
 .author {
-  color: #005bac;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 500;
 }
@@ -189,16 +189,16 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 }
 
 .dot {
-  color: #ccc;
+  color: var(--color-text-faint);
 }
 
 .category {
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 .topic-body {
   line-height: 1.8;
-  color: #333;
+  color: var(--color-text-strong);
 }
 
 .topic-body :deep(img) {
@@ -207,7 +207,7 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 }
 
 .topic-body :deep(pre) {
-  background: #f6f8fa;
+  background: var(--color-bg-page);
   border-radius: 4px;
   padding: 1rem;
   overflow-x: auto;
@@ -221,9 +221,9 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 .topic-body :deep(blockquote) {
   margin: 1rem 0;
   padding: 0.5rem 1rem;
-  border-left: 3px solid #005bac;
-  background: #f7f9fb;
-  color: #555;
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-bg-page);
+  color: var(--color-text);
 }
 
 .topic-github-link {
@@ -235,7 +235,7 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
-  color: #005bac;
+  color: var(--color-primary);
   font-weight: 500;
   text-decoration: none;
 }
