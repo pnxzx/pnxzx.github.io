@@ -87,52 +87,36 @@ const formatDate = (dateString) => {
 
 <style scoped>
 .news-detail {
-  max-width: 800px;
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 2rem 1rem;
-}
-
-.back-button {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  margin-bottom: 1.5rem;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.back-button:hover {
-  background: #eee;
 }
 
 .news-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .news-header h1 {
   font-size: clamp(1.5rem, 3vw, 2rem);
-  color: #333;
+  color: var(--color-text-strong);
   margin-bottom: 0.5rem;
 }
 
 .news-meta {
   display: flex;
   gap: 1rem;
-  color: #666;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
 }
 
 .repost-banner {
   display: inline-block;
   font-size: 0.8rem;
-  color: #005bac;
-  background: rgba(0, 91, 172, 0.08);
-  border-radius: 3px;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-sm);
   padding: 0.15em 0.7em;
   margin-bottom: 0.75rem;
 }
@@ -140,15 +124,15 @@ const formatDate = (dateString) => {
 .repost-footer {
   margin-top: 2.5rem;
   padding: 1rem 1.25rem;
-  background: #f7f9fb;
-  border-left: 3px solid #005bac;
-  border-radius: 0 4px 4px 0;
+  background: var(--color-bg-page);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .repost-notice {
   margin: 0 0 0.5rem;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--color-text-muted);
   line-height: 1.6;
 }
 
@@ -156,7 +140,7 @@ const formatDate = (dateString) => {
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
-  color: #005bac;
+  color: var(--color-primary);
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
@@ -170,7 +154,7 @@ const formatDate = (dateString) => {
 .news-not-found {
   text-align: center;
   padding: 3rem 1rem;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .news-content {
@@ -186,13 +170,13 @@ const formatDate = (dateString) => {
 .news-content :deep(figure.news-image img) {
   max-width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .news-content :deep(figure.news-image figcaption) {
   margin-top: 0.5rem;
   font-size: 0.875rem;
-  color: #888;
+  color: var(--color-text-muted);
 }
 
 /* Video embed styles */
@@ -203,7 +187,7 @@ const formatDate = (dateString) => {
   height: 0;
   margin: 1.5rem 0;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   background: #000;
 }
 
@@ -219,8 +203,8 @@ const formatDate = (dateString) => {
 
 /* Code block styles */
 .news-content :deep(pre) {
-  background: #f6f8fa;
-  border-radius: 4px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-sm);
   padding: 1rem;
   overflow-x: auto;
   margin: 1rem 0;

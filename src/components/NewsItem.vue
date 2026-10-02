@@ -44,13 +44,13 @@ const formatDate = (dateString) => {
   display: flex;
   justify-content: space-between;
   padding: 0.75em 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .news-item:hover {
-  background-color: rgba(0, 91, 172, 0.05);
+  background-color: var(--color-primary-soft);
 }
 
 .news-item:active {
@@ -66,7 +66,7 @@ const formatDate = (dateString) => {
   display: inline-block;
   font-size: 0.75em;
   font-weight: 400;
-  color: #005bac;
+  color: var(--color-primary);
   border: 1px solid currentColor;
   border-radius: 3px;
   padding: 0 0.35em;
@@ -75,7 +75,7 @@ const formatDate = (dateString) => {
 }
 
 .news-date {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.95em;
   margin-left: 1em;
   white-space: nowrap;
