@@ -99,8 +99,8 @@ const loadingMore = ref(false)
 const error = ref('')
 const page = ref(1)
 const hasMore = ref(false)
-
-const newDiscussionUrl = `https://github.com/${REPO_OWNER}/${REPO_NAME}/discussions/new/choose`
+// https://github.com/orgs/pnxzx/discussions/new?category=q-a
+const newDiscussionUrl = `https://github.com/orgs/${REPO_OWNER}/discussions/new?category=q-a`
 
 async function fetchDiscussions(pageNum) {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions?per_page=${PER_PAGE}&page=${pageNum}`

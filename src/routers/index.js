@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// 路由懒加载：按页面分包，减小首屏体积
+// 路由直接挂载业务组件，去掉无意义的转发壳层
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../pages/Home.vue'),
+    component: () => import('../components/Home.vue'),
     meta: { title: '平南县中学欢迎您' }
   },
   {
     path: '/about',
     name: 'About',
-    component: () => import('../pages/About.vue'),
+    component: () => import('../components/SchoolIntro.vue'),
     meta: { title: '学校简介 - 平南县中学' }
   },
   {
     path: '/news',
     name: 'News',
-    component: () => import('../pages/News.vue'),
+    component: () => import('../components/NewsList.vue'),
     meta: { title: '新闻动态 - 平南县中学' }
   },
   {
@@ -39,7 +39,7 @@ const routes = [
     meta: { title: '发起新话题 - 平南县中学交流论坛' }
   },
   {
-    path: '/forum/:number(\\d+)',
+    path: '/forum/:number(\d+)',
     name: 'ForumTopic',
     component: () => import('../pages/ForumTopic.vue'),
     props: true,
@@ -48,7 +48,7 @@ const routes = [
   {
     path: '/contact',
     name: 'Contact',
-    component: () => import('../pages/Contact.vue'),
+    component: () => import('../components/Contact.vue'),
     meta: { title: '联系我们 - 平南县中学' }
   },
   // 捕获所有未匹配的路由 → 404 页面
