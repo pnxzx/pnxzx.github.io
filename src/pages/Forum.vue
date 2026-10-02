@@ -1,7 +1,7 @@
 <template>
   <section class="forum-page">
     <header class="forum-header">
-      <h2 class="section-title">交流论坛</h2>
+      <h2 class="section-title">交流讨论</h2>
       <p class="forum-desc">
         基于 GitHub Discussions 的社区讨论区，发帖与回帖需登录 GitHub 账号。
       </p>
