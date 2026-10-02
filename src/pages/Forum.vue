@@ -1,7 +1,7 @@
 <template>
   <section class="forum-page">
     <header class="forum-header">
-      <h2 class="section-title">交流讨论</h2>
+      <h2>交流论坛</h2>
       <p class="forum-desc">
         基于 GitHub Discussions 的社区讨论区，发帖与回帖需登录 GitHub 账号。
       </p>
@@ -99,8 +99,8 @@ const loadingMore = ref(false)
 const error = ref('')
 const page = ref(1)
 const hasMore = ref(false)
-// https://github.com/orgs/pnxzx/discussions/new?category=q-a
-const newDiscussionUrl = `https://github.com/orgs/${REPO_OWNER}/discussions/new?category=q-a`
+
+const newDiscussionUrl = `https://github.com/${REPO_OWNER}/${REPO_NAME}/discussions/new/choose`
 
 async function fetchDiscussions(pageNum) {
   const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions?per_page=${PER_PAGE}&page=${pageNum}`
@@ -148,17 +148,33 @@ onMounted(async () => {
 
 <style scoped>
 .forum-page {
-  max-width: var(--container-width);
+  max-width: 800px;
   margin: 0 auto;
   padding: clamp(1rem, 3vw, 2rem);
 }
 
 .forum-header h2 {
+  color: #005bac;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  position: relative;
+  padding-left: 1rem;
   margin: 0 0 0.5rem;
 }
 
+.forum-header h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 4px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
 .forum-desc {
-  color: var(--color-text-muted);
+  color: #888;
   font-size: 0.9rem;
   margin: 0 0 1.5rem;
 }
@@ -166,24 +182,21 @@ onMounted(async () => {
 .forum-loading,
 .forum-error,
 .forum-empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--color-text-muted);
-}
-
-.forum-empty {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
 }
 
 .topic-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: var(--color-bg-card);
-  border-radius: var(--radius-md);
+  background: #fff;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -192,7 +205,7 @@ onMounted(async () => {
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
   transition: background 0.15s;
 }
@@ -202,7 +215,7 @@ onMounted(async () => {
 }
 
 .topic-item:hover {
-  background: var(--color-primary-soft);
+  background: rgba(0, 91, 172, 0.04);
 }
 
 .topic-main {
@@ -213,7 +226,7 @@ onMounted(async () => {
 .topic-title {
   display: block;
   font-weight: 500;
-  color: var(--color-text-strong);
+  color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -229,7 +242,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--color-text-faint);
+  color: #999;
   font-size: 0.8rem;
   white-space: nowrap;
 }
@@ -241,11 +254,11 @@ onMounted(async () => {
 }
 
 .dot {
-  color: var(--color-text-faint);
+  color: #ccc;
 }
 
 .topic-stats {
-  color: var(--color-text-muted);
+  color: #888;
   font-size: 0.85rem;
   white-space: nowrap;
 }
@@ -257,15 +270,15 @@ onMounted(async () => {
 
 .more-button {
   padding: 0.5rem 1.5rem;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-card);
-  border-radius: var(--radius-sm);
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 4px;
   cursor: pointer;
-  color: var(--color-text);
+  color: #555;
 }
 
 .more-button:hover:not(:disabled) {
-  background: var(--color-bg-soft);
+  background: #f5f5f5;
 }
 
 .forum-actions {
@@ -277,14 +290,18 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  color: var(--color-primary);
+  color: #005bac;
   text-decoration: none;
   font-size: 0.95rem;
 }
 
 .action-divider {
-  color: var(--color-text-faint);
+  color: #ccc;
   margin: 0 0.25em;
+}
+
+.new-topic-link:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {
