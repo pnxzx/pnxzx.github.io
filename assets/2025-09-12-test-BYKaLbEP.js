@@ -6,7 +6,7 @@ category: "通知公告"
 tags: ["开学", "通知", "2025"]
 featured: true
 summary: "根据教育局安排，我校将于9月1日正式开学，现将相关事宜通知如下。"
-cover: "img/SchoolGate.jpg"
+cover: "img/SchoolGate.webp"
 ---
 
 # 2025年秋季开学通知
