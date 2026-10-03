@@ -7,7 +7,7 @@
       :class="{ 'animate-up': isAnimating }"
     >
       <img
-        src="@/assets/img/SchoolGate.jpg"
+        src="@/assets/img/SchoolGate.webp"
         alt="平南县中学全景"
         class="hero-image"
         @load="imageLoaded = true"

@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header-logo">
-      <img src="@/assets/img/logo.png" alt="平南县中学LOGO" class="logo" />
+      <img src="@/assets/img/logo.webp" alt="平南县中学LOGO" class="logo" />
       <span class="school-name">平南县中学</span>
     </div>
     <nav :class="{ open: menuOpen }">

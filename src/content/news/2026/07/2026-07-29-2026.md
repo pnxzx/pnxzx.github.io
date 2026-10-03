@@ -37,7 +37,7 @@ source: "https://mp.weixin.qq.com/s/NRLrv-wGLD0WKrydjZJdhQ"
 
 6.缴费后完成确认手续。
 
-![](/assets/news/2026-07-29-2026/img-03.jpg)
+![](/assets/news/2026-07-29-2026/img-03.webp)
 
 **（长按识别以上二维码输入中考准考证号以及姓名即可查询个人确认分组）**
 

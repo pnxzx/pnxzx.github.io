@@ -11,7 +11,7 @@ source: "https://mp.weixin.qq.com/s/Go9LDui7kx-rsMhVXwxR6g"
 
 **·新学期·新旅程·**
 
-![](/assets/news/2026-08-28-2026/img-01.jpg)
+![](/assets/news/2026-08-28-2026/img-01.webp)
 
 **根据《平南县中小学幼儿园二〇二六年秋季期开学通告》和上级有关部门的相关工作要求，经学校研究，我校2026年秋季期开学有关事项安排如下：**
 
@@ -31,7 +31,7 @@ source: "https://mp.weixin.qq.com/s/Go9LDui7kx-rsMhVXwxR6g"
 
 **2.仪容、仪表要求：对照《平南县中学仪容仪表规范要求》整理好仪容仪表，仪容仪表合格者方可报到。**
 
-![](/assets/news/2026-08-28-2026/img-02.jpg)
+![](/assets/news/2026-08-28-2026/img-02.webp)
 
 ### （二）注册流程
 
