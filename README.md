@@ -20,8 +20,10 @@
 
 ```
 pnxzx.github.io/
+├── build/                  # 构建期插件（新闻预编译、预渲染）
 ├── public/                 # 静态资源（含导入文章的图片 public/assets/news/）
 ├── scripts/                # 工具脚本（公众号导入等）
+├── tests/                  # Vitest 单元测试
 ├── src/
 │   ├── assets/            # 资源文件
 │   ├── components/        # 公共组件（含新闻列表/详情）
@@ -65,6 +67,27 @@ yarn dev
 ```
 
 项目将在 `http://localhost:5173` 运行（默认端口）。
+
+### 常用命令
+
+```bash
+yarn dev          # 本地开发（热更新）
+yarn build        # 生产构建（预编译新闻 + 生成 sitemap / 预渲染页面）
+yarn preview      # 预览构建产物
+yarn lint         # ESLint 检查
+yarn test         # Vitest 单元测试
+yarn commit       # commitizen 交互式生成规范提交
+```
+
+### 构建管线说明
+
+- **新闻预编译**：`build/news-data-plugin.js` 在构建期解析 `src/content/news/**/*.md`
+  （Markdown → HTML、代码高亮、XSS 过滤），浏览器只加载 JSON，不再打包
+  marked / highlight.js / DOMPurify 处理新闻。frontmatter 写错会让构建失败而不是线上静默丢文章。
+- **预渲染**：为 4 个静态路由和每篇新闻生成独立 HTML（含 title / description /
+  Open Graph / canonical 与 `<noscript>` 正文），便于社交平台抓取；页面加载后仍由 SPA 接管。
+- **sitemap / 404**：构建时自动生成 `sitemap.xml` 与 GitHub Pages 的 `404.html` 回退。
+- **版本号**：页脚显示构建版本（git 短 hash），便于核对线上部署是否生效。
 
 
 ## 📝 功能特性
