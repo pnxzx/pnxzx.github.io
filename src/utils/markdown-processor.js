@@ -7,7 +7,7 @@ import css from 'highlight.js/lib/languages/css'
 import json from 'highlight.js/lib/languages/json'
 import bash from 'highlight.js/lib/languages/bash'
 import python from 'highlight.js/lib/languages/python'
-import DOMPurify from 'dompurify'
+import DOMPurifyModule from 'dompurify'
 import { parseFrontmatter, generateSlug as makeSlug } from './frontmatter.js'
 
 // 按需注册语言，避免引入全部 190+ 语言（减包体 ~500KB）
@@ -99,12 +99,28 @@ const videoExtension = {
 // Markdown 正文中直写的第三方 iframe 一律移除
 const TRUSTED_IFRAME_HOSTS = ['player.bilibili.com', 'www.youtube.com', 'youtube-nocookie.com']
 
+let purifier = null
+
+// dompurify 的默认导出在浏览器中是已绑定 DOM 的实例，在 Node 中是工厂函数。
+// 构建期（Vite 插件）会先注入 jsdom 的 window，再按需创建实例。
+function getPurifier() {
+  if (purifier) return purifier
+  if (typeof window === 'undefined' || typeof document === 'undefined') return null
+  purifier =
+    typeof DOMPurifyModule.sanitize === 'function'
+      ? DOMPurifyModule
+      : DOMPurifyModule(window)
+  return purifier
+}
+
 // 统一 XSS 过滤：
 // marked 的自定义 renderer 只覆盖了 image/video，原生 HTML 与 <a> 不经过 renderer，
 // 因此必须对最终 HTML 整体过滤（防御 Markdown 内嵌 <script>/<img onerror>/javascript: 链接）
 function sanitizeHtml(html) {
+  const purify = getPurifier()
+  if (!purify) return html // 无 DOM 环境（如纯 Node 脚本）时跳过
   // uponSanitizeElement 钩子在校验白名单属性前执行，逐节点过滤 iframe
-  DOMPurify.addHook('uponSanitizeElement', (node, data) => {
+  purify.addHook('uponSanitizeElement', (node, data) => {
     if (data.tagName !== 'iframe') return
     const src = node.getAttribute('src') || ''
     let host
@@ -119,14 +135,14 @@ function sanitizeHtml(html) {
     if (!TRUSTED_IFRAME_HOSTS.includes(host)) node.remove()
   })
 
-  const clean = DOMPurify.sanitize(html, {
+  const clean = purify.sanitize(html, {
     ADD_TAGS: ['iframe'],
     ADD_ATTR: ['target', 'allowfullscreen', 'loading', 'frameborder', 'scrolling'],
     FORBID_TAGS: ['style', 'form'],
     ALLOWED_URI_REGEXP: /^(?:https?:|\/(?!\/)|#)/,
   })
 
-  DOMPurify.removeHook('uponSanitizeElement')
+  purify.removeHook('uponSanitizeElement')
   return clean
 }
 

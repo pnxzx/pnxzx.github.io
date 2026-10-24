@@ -8,6 +8,7 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
 import { parseFrontmatter, generateSlug } from './src/utils/frontmatter.js'
+import { newsDataPlugin } from './build/news-data-plugin.js'
 
 const ROOT = fileURLToPath(new URL('.', import.meta.url))
 const DIST = path.join(ROOT, 'dist')
@@ -89,7 +90,7 @@ function ghPagesFallback() {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueDevTools(), ghPagesFallback()],
+  plugins: [vue(), vueDevTools(), newsDataPlugin(), ghPagesFallback()],
   define: {
     __APP_VERSION__: JSON.stringify(buildVersion()),
   },

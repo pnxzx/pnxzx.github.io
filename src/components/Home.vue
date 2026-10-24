@@ -7,9 +7,15 @@
       :class="{ 'animate-up': isAnimating }"
     >
       <img
-        src="@/assets/img/SchoolGate.webp"
+        :src="heroLarge"
+        :srcset="`${heroSmall} 800w, ${heroLarge} 1920w`"
+        sizes="100vw"
+        width="1920"
+        height="1079"
         alt="平南县中学全景"
         class="hero-image"
+        fetchpriority="high"
+        decoding="async"
         @load="imageLoaded = true"
       >
 
@@ -104,6 +110,8 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import SchoolIntro from './SchoolIntro.vue'
+import heroLarge from '@/assets/img/SchoolGate.webp'
+import heroSmall from '@/assets/img/SchoolGate-800.webp'
 
 const imageLoaded = ref(false)
 const isAnimating = ref(false)
