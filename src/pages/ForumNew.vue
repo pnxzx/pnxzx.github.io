@@ -66,10 +66,9 @@
 // 找到新讨论编号并跳转 /forum/:number。
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { DISCUSSIONS_API, NEW_DISCUSSION_URL } from '@/config/site.js'
 import GiscusComment from '@/components/GiscusComment.vue'
 
-const REPO_OWNER = 'pnxzx'
-const REPO_NAME = 'pnxzx.github.io'
 const PREV_TITLE = '交流论坛 - 平南县中学'
 
 const router = useRouter()
@@ -80,7 +79,7 @@ let pollTimer = null
 let tries = 0
 const MAX_TRIES = 30 // 30 * 2s = 60s
 
-const manualCheckUrl = `https://github.com/${REPO_OWNER}/${REPO_NAME}/discussions?discussions_q=`
+const manualCheckUrl = NEW_DISCUSSION_URL
 
 // 标题变化 → document.title 跟随 → giscus 绑定到目标讨论；
 // 标题非空时开始轮询检测（评论发布 → giscus 自动建讨论 → 跳转）
@@ -98,7 +97,7 @@ const published = ref(false)
 
 async function poll() {
   try {
-    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions?per_page=50`, {
+    const res = await fetch(`${DISCUSSIONS_API}?per_page=50`, {
       headers: { Accept: 'application/vnd.github+json' }
     })
     if (!res.ok) return
@@ -171,7 +170,7 @@ const goBack = () => {
   gap: 0.4em;
   padding: 0.5rem 1rem;
   margin-bottom: 1.5rem;
-  background: #f5f5f5;
+  background: var(--color-bg-soft);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -179,17 +178,17 @@ const goBack = () => {
 }
 
 .back-button:hover {
-  background: #eee;
+  background: var(--color-border);
 }
 
 .new-header h1 {
   font-size: clamp(1.4rem, 3vw, 1.8rem);
-  color: #333;
+  color: var(--color-text-strong);
   margin: 0 0 0.5rem;
 }
 
 .new-desc {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
   margin: 0 0 1.5rem;
   line-height: 1.6;
@@ -202,14 +201,14 @@ const goBack = () => {
 .field-label {
   display: block;
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-text);
   margin-bottom: 0.4rem;
 }
 
 .field-input {
   width: 100%;
   padding: 0.7rem 0.9rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
@@ -217,17 +216,17 @@ const goBack = () => {
 
 .field-input:focus {
   outline: none;
-  border-color: #005bac;
+  border-color: var(--color-primary);
 }
 
 .title-preview {
-  color: #005bac;
+  color: var(--color-primary);
   font-size: 0.85rem;
   margin: 0.5rem 0 0;
 }
 
 .giscus-compose {
-  border: 1px solid #eee;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 1rem;
 }
@@ -236,7 +235,7 @@ const goBack = () => {
   display: flex;
   align-items: center;
   gap: 0.5em;
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.85rem;
   margin-bottom: 1rem;
 }
@@ -246,15 +245,15 @@ const goBack = () => {
   align-items: center;
   gap: 0.6rem;
   margin-top: 1.5rem;
-  color: #555;
+  color: var(--color-text);
   font-size: 0.9rem;
 }
 
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid #ccc;
-  border-top-color: #005bac;
+  border: 2px solid var(--color-text-faint);
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -265,14 +264,14 @@ const goBack = () => {
 
 .failed {
   margin-top: 1.5rem;
-  color: #b06000;
+  color: var(--color-danger);
   font-size: 0.9rem;
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #005bac;
+  color: var(--color-primary);
   cursor: pointer;
   padding: 0;
   font-size: inherit;

@@ -7,7 +7,8 @@ import css from 'highlight.js/lib/languages/css'
 import json from 'highlight.js/lib/languages/json'
 import bash from 'highlight.js/lib/languages/bash'
 import python from 'highlight.js/lib/languages/python'
-import DOMPurify from 'dompurify'
+import DOMPurifyModule from 'dompurify'
+import { parseFrontmatter, generateSlug as makeSlug } from './frontmatter.js'
 
 // 按需注册语言，避免引入全部 190+ 语言（减包体 ~500KB）
 hljs.registerLanguage('javascript', javascript)
@@ -17,48 +18,6 @@ hljs.registerLanguage('json', json)
 hljs.registerLanguage('bash', bash)
 hljs.registerLanguage('python', python)
 
-// 轻量 frontmatter 解析（替代 gray-matter）：
-// gray-matter 依赖 Node 的 Buffer 全局，在浏览器中抛 ReferenceError，
-// 导致所有新闻在运行时静默解析失败。此处支持项目所需的 YAML 子集：
-// 字符串（含引号）、数字、布尔、内联数组，以及 --- 包裹的结构。
-function parseFrontmatter(raw) {
-  const text = String(raw ?? '').replace(/^﻿/, '').replace(/\r\n/g, '\n')
-  const match = /^---\n([\s\S]*?)\n---\n?/.exec(text)
-  if (!match) return { data: {}, content: text }
-
-  const data = {}
-  for (const line of match[1].split('\n')) {
-    const entry = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(line.trim())
-    if (!entry) continue
-    const [, key, rawValue] = entry
-    let value = rawValue.trim()
-
-    // 内联数组: ["a", "b"] 或 [a, b]
-    if (value.startsWith('[') && value.endsWith(']')) {
-      const inner = value.slice(1, -1).trim()
-      data[key] = inner === ''
-        ? []
-        : inner.split(',').map(v => stripQuotes(v.trim()))
-      continue
-    }
-
-    if (value === 'true') data[key] = true
-    else if (value === 'false') data[key] = false
-    else if (value !== '' && !Number.isNaN(Number(value))) data[key] = Number(value)
-    else data[key] = stripQuotes(value)
-  }
-  return { data, content: text.slice(match[0].length) }
-}
-
-function stripQuotes(value) {
-  if (value.length >= 2) {
-    const first = value[0]
-    if ((first === '"' && value.endsWith('"')) || (first === "'" && value.endsWith("'"))) {
-      return value.slice(1, -1)
-    }
-  }
-  return value
-}
 
 function escapeHtml(str) {
   return String(str)
@@ -140,15 +99,31 @@ const videoExtension = {
 // Markdown 正文中直写的第三方 iframe 一律移除
 const TRUSTED_IFRAME_HOSTS = ['player.bilibili.com', 'www.youtube.com', 'youtube-nocookie.com']
 
+let purifier = null
+
+// dompurify 的默认导出在浏览器中是已绑定 DOM 的实例，在 Node 中是工厂函数。
+// 构建期（Vite 插件）会先注入 jsdom 的 window，再按需创建实例。
+function getPurifier() {
+  if (purifier) return purifier
+  if (typeof window === 'undefined' || typeof document === 'undefined') return null
+  purifier =
+    typeof DOMPurifyModule.sanitize === 'function'
+      ? DOMPurifyModule
+      : DOMPurifyModule(window)
+  return purifier
+}
+
 // 统一 XSS 过滤：
 // marked 的自定义 renderer 只覆盖了 image/video，原生 HTML 与 <a> 不经过 renderer，
 // 因此必须对最终 HTML 整体过滤（防御 Markdown 内嵌 <script>/<img onerror>/javascript: 链接）
 function sanitizeHtml(html) {
+  const purify = getPurifier()
+  if (!purify) return html // 无 DOM 环境（如纯 Node 脚本）时跳过
   // uponSanitizeElement 钩子在校验白名单属性前执行，逐节点过滤 iframe
-  DOMPurify.addHook('uponSanitizeElement', (node, data) => {
+  purify.addHook('uponSanitizeElement', (node, data) => {
     if (data.tagName !== 'iframe') return
     const src = node.getAttribute('src') || ''
-    let host = ''
+    let host
     try {
       const parsed = new URL(src)
       if (parsed.protocol !== 'https:') throw new Error('insecure')
@@ -160,14 +135,14 @@ function sanitizeHtml(html) {
     if (!TRUSTED_IFRAME_HOSTS.includes(host)) node.remove()
   })
 
-  const clean = DOMPurify.sanitize(html, {
+  const clean = purify.sanitize(html, {
     ADD_TAGS: ['iframe'],
     ADD_ATTR: ['target', 'allowfullscreen', 'loading', 'frameborder', 'scrolling'],
     FORBID_TAGS: ['style', 'form'],
     ALLOWED_URI_REGEXP: /^(?:https?:|\/(?!\/)|#)/,
   })
 
-  DOMPurify.removeHook('uponSanitizeElement')
+  purify.removeHook('uponSanitizeElement')
   return clean
 }
 
@@ -224,23 +199,11 @@ class MarkdownProcessor {
   }
 
   generateSlug(title, date) {
-    // 守卫：frontmatter 缺失关键字段时降级，而不是抛 Invalid time value 让文章静默消失
-    const safeTitle = String(title ?? 'untitled')
-    const parsedDate = date ? new Date(date) : null
-    const dateStr =
-      parsedDate && !Number.isNaN(parsedDate.getTime())
-        ? parsedDate.toISOString().split('T')[0]
-        : 'undated'
-    const titleSlug = safeTitle
-      .toLowerCase()
-      .replace(/[^\u4e00-\u9fa5a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-    return `${dateStr}-${titleSlug || 'untitled'}`
+    return makeSlug(title, date)
   }
 
   generateExcerpt(content, maxLength = 150) {
-    const plainText = content.replace(/[#*`\[\]]/g, '').trim()
+    const plainText = content.replace(/[#*`[\]]/g, '').trim()
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength) + '...'
       : plainText

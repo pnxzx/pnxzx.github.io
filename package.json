@@ -9,7 +9,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "commit": "cz",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"src/**/*.{js,vue,css}\" \"tests/**/*.js\" \"*.{js,json,html}\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "packageManager": "yarn@4.9.1",
   "dependencies": {
@@ -20,22 +26,23 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^10.13.0",
+    "eslint-plugin-vue": "^10.11.1",
     "jsdom": "^30.1.1",
+    "prettier": "^3.9.10",
     "turndown": "^7.2.4",
     "vite": "^7.0.6",
-    "vite-plugin-vue-devtools": "^8.0.0"
+    "vite-plugin-vue-devtools": "^8.0.0",
+    "vitest": "^5.0.5",
+    "vue-eslint-parser": "^10.4.1"
   },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "dependenciesMeta": {
-    "vue@3.5.20": {
-      "unplugged": true
     }
   }
 }

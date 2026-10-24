@@ -7,9 +7,15 @@
       :class="{ 'animate-up': isAnimating }"
     >
       <img
-        src="@/assets/img/SchoolGate.webp"
+        :src="heroLarge"
+        :srcset="`${heroSmall} 800w, ${heroLarge} 1920w`"
+        sizes="100vw"
+        width="1920"
+        height="1079"
         alt="平南县中学全景"
         class="hero-image"
+        fetchpriority="high"
+        decoding="async"
         @load="imageLoaded = true"
       >
 
@@ -32,11 +38,10 @@
   <transition name="content-enter">
     <section
       v-if="contentActive"
-      class="content-section"
       ref="contentSection"
+      class="content-section"
     >
-
-      <div class="content-wrapper">
+<div class="content-wrapper">
         <button class="back-button" @click="resetAnimation">
           <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
             <path d="M12 8 18 14H6z" fill="currentColor" />
@@ -100,12 +105,13 @@
       </div>
     </section>
   </transition>
-
 </template>
 
 <script setup>
 import { ref, nextTick } from 'vue'
 import SchoolIntro from './SchoolIntro.vue'
+import heroLarge from '@/assets/img/SchoolGate.webp'
+import heroSmall from '@/assets/img/SchoolGate-800.webp'
 
 const imageLoaded = ref(false)
 const isAnimating = ref(false)
@@ -185,7 +191,7 @@ const resetAnimation = () => {
 .cta-button {
   padding: 12px 24px;
   background: rgba(255, 255, 255, 0.9);
-  color: #005bac;
+  color: var(--color-primary);
   border: none;
   border-radius: 50px;
   font-weight: bold;
@@ -219,13 +225,13 @@ const resetAnimation = () => {
 }
 
 .explore-header h2 {
-  color: #005bac;
+  color: var(--color-primary);
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin: 0 0 0.5rem;
 }
 
 .explore-sub {
-  color: #888;
+  color: var(--color-text-muted);
   font-size: 0.95rem;
   margin: 0;
   letter-spacing: 0.1em;
@@ -244,7 +250,7 @@ const resetAnimation = () => {
   align-items: center;
   gap: 0.35rem;
   padding: 1.4rem 0.75rem;
-  background: #f6f8fa;
+  background: var(--color-bg-page);
   border: 1px solid transparent;
   border-radius: 10px;
   text-decoration: none;
@@ -253,25 +259,25 @@ const resetAnimation = () => {
 }
 
 .explore-card:hover {
-  border-color: rgba(0, 91, 172, 0.35);
-  background: rgba(0, 91, 172, 0.05);
+  border-color: var(--color-primary-border);
+  background: var(--color-primary-soft);
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 91, 172, 0.12);
 }
 
 .card-icon {
-  color: #005bac;
+  color: var(--color-primary);
   margin-bottom: 0.25rem;
 }
 
 .card-title {
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-strong);
   font-size: 0.95rem;
 }
 
 .card-desc {
-  color: #999;
+  color: var(--color-text-faint);
   font-size: 0.8rem;
 }
 
@@ -286,7 +292,7 @@ const resetAnimation = () => {
   top: auto;
   right: 20px;
   padding: 8px 16px;
-  background: #005bac;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 20px;

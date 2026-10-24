@@ -1,9 +1,9 @@
 <template>
   <section class="news-list">
     <div class="news-header">
-      <h2>新闻动态</h2>
+      <h2 class="section-title">新闻动态</h2>
       <div class="news-controls">
-        <select v-model="selectedCategory" @change="applyFilters">
+        <select v-model="selectedCategory" aria-label="按分类筛选新闻" @change="applyFilters">
           <option value="">全部分类</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
@@ -11,9 +11,10 @@
         </select>
         <input
           v-model="searchQuery"
-          @input="applyFilters"
           placeholder="搜索新闻..."
+          aria-label="搜索新闻标题、摘要或标签"
           class="search-input"
+          @input="applyFilters"
         />
       </div>
     </div>
@@ -26,13 +27,13 @@
       暂无新闻
     </div>
     
-    <div v-else class="news-grid">
+    <ul v-else class="news-grid">
       <NewsItem 
         v-for="item in paginatedNews" 
         :key="item.metadata.slug" 
         :news="item" 
       />
-    </div>
+    </ul>
     
     <div v-if="totalPages > 1" class="pagination">
       <button 
@@ -114,9 +115,9 @@ onMounted(() => {
 
 <style scoped>
 .news-list {
-  background: #fff;
+  background: var(--color-bg-card);
   padding: clamp(1rem, 3vw, 2rem);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -130,23 +131,7 @@ onMounted(() => {
 }
 
 .news-header h2 {
-  color: #005bac;
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
-  position: relative;
-  padding-left: 1rem;
   margin: 0;
-}
-
-.news-header h2::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 60%;
-  width: 4px;
-  background: currentColor;
-  border-radius: 2px;
 }
 
 .news-controls {
@@ -158,8 +143,8 @@ onMounted(() => {
 .news-controls select,
 .search-input {
   padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
 }
 
@@ -169,14 +154,17 @@ onMounted(() => {
 
 .news-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .loading,
 .no-news {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .pagination {
@@ -188,21 +176,21 @@ onMounted(() => {
 
 .pagination button {
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s;
 }
 
 .pagination button:hover {
-  background: #f5f5f5;
+  background: var(--color-bg-soft);
 }
 
 .pagination button.active {
-  background: #005bac;
+  background: var(--color-primary);
   color: white;
-  border-color: #005bac;
+  border-color: var(--color-primary);
 }
 
 @media (max-width: 768px) {
@@ -210,11 +198,11 @@ onMounted(() => {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .news-controls {
     flex-direction: column;
   }
-  
+
   .search-input {
     width: 100%;
   }
