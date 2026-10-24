@@ -8,6 +8,7 @@ import json from 'highlight.js/lib/languages/json'
 import bash from 'highlight.js/lib/languages/bash'
 import python from 'highlight.js/lib/languages/python'
 import DOMPurify from 'dompurify'
+import { parseFrontmatter, generateSlug as makeSlug } from './frontmatter.js'
 
 // 按需注册语言，避免引入全部 190+ 语言（减包体 ~500KB）
 hljs.registerLanguage('javascript', javascript)
@@ -17,48 +18,6 @@ hljs.registerLanguage('json', json)
 hljs.registerLanguage('bash', bash)
 hljs.registerLanguage('python', python)
 
-// 轻量 frontmatter 解析（替代 gray-matter）：
-// gray-matter 依赖 Node 的 Buffer 全局，在浏览器中抛 ReferenceError，
-// 导致所有新闻在运行时静默解析失败。此处支持项目所需的 YAML 子集：
-// 字符串（含引号）、数字、布尔、内联数组，以及 --- 包裹的结构。
-function parseFrontmatter(raw) {
-  const text = String(raw ?? '').replace(/^﻿/, '').replace(/\r\n/g, '\n')
-  const match = /^---\n([\s\S]*?)\n---\n?/.exec(text)
-  if (!match) return { data: {}, content: text }
-
-  const data = {}
-  for (const line of match[1].split('\n')) {
-    const entry = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(line.trim())
-    if (!entry) continue
-    const [, key, rawValue] = entry
-    let value = rawValue.trim()
-
-    // 内联数组: ["a", "b"] 或 [a, b]
-    if (value.startsWith('[') && value.endsWith(']')) {
-      const inner = value.slice(1, -1).trim()
-      data[key] = inner === ''
-        ? []
-        : inner.split(',').map(v => stripQuotes(v.trim()))
-      continue
-    }
-
-    if (value === 'true') data[key] = true
-    else if (value === 'false') data[key] = false
-    else if (value !== '' && !Number.isNaN(Number(value))) data[key] = Number(value)
-    else data[key] = stripQuotes(value)
-  }
-  return { data, content: text.slice(match[0].length) }
-}
-
-function stripQuotes(value) {
-  if (value.length >= 2) {
-    const first = value[0]
-    if ((first === '"' && value.endsWith('"')) || (first === "'" && value.endsWith("'"))) {
-      return value.slice(1, -1)
-    }
-  }
-  return value
-}
 
 function escapeHtml(str) {
   return String(str)
@@ -224,19 +183,7 @@ class MarkdownProcessor {
   }
 
   generateSlug(title, date) {
-    // 守卫：frontmatter 缺失关键字段时降级，而不是抛 Invalid time value 让文章静默消失
-    const safeTitle = String(title ?? 'untitled')
-    const parsedDate = date ? new Date(date) : null
-    const dateStr =
-      parsedDate && !Number.isNaN(parsedDate.getTime())
-        ? parsedDate.toISOString().split('T')[0]
-        : 'undated'
-    const titleSlug = safeTitle
-      .toLowerCase()
-      .replace(/[^\u4e00-\u9fa5a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-    return `${dateStr}-${titleSlug || 'untitled'}`
+    return makeSlug(title, date)
   }
 
   generateExcerpt(content, maxLength = 150) {

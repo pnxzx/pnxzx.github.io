@@ -11,13 +11,14 @@
 // https://giscus.app/zh-CN
 // 配置缺失时优雅降级，不阻塞页面
 import { ref, onMounted } from 'vue'
+import { REPO_OWNER, REPO_NAME } from '@/config/site.js'
 
 const container = ref(null)
 const configured = ref(false)
 
 // giscus 配置（https://giscus.app/zh-CN 生成，分类: Q&A）
 const GISCUS_CONFIG = {
-  repo: 'pnxzx/pnxzx.github.io',
+  repo: `${REPO_OWNER}/${REPO_NAME}`,
   repoId: 'R_kgDOPm-QKw',
   category: 'Q&A', // 必须与 categoryId 对应的分类名一致，否则 giscus 报错
   categoryId: 'DIC_kwDOPm-QK84Cuzjw',

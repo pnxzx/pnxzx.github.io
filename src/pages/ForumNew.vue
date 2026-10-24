@@ -66,10 +66,9 @@
 // 找到新讨论编号并跳转 /forum/:number。
 import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { DISCUSSIONS_API, NEW_DISCUSSION_URL } from '@/config/site.js'
 import GiscusComment from '@/components/GiscusComment.vue'
 
-const REPO_OWNER = 'pnxzx'
-const REPO_NAME = 'pnxzx.github.io'
 const PREV_TITLE = '交流论坛 - 平南县中学'
 
 const router = useRouter()
@@ -80,7 +79,7 @@ let pollTimer = null
 let tries = 0
 const MAX_TRIES = 30 // 30 * 2s = 60s
 
-const manualCheckUrl = `https://github.com/${REPO_OWNER}/${REPO_NAME}/discussions?discussions_q=`
+const manualCheckUrl = NEW_DISCUSSION_URL
 
 // 标题变化 → document.title 跟随 → giscus 绑定到目标讨论；
 // 标题非空时开始轮询检测（评论发布 → giscus 自动建讨论 → 跳转）
@@ -98,7 +97,7 @@ const published = ref(false)
 
 async function poll() {
   try {
-    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions?per_page=50`, {
+    const res = await fetch(`${DISCUSSIONS_API}?per_page=50`, {
       headers: { Accept: 'application/vnd.github+json' }
     })
     if (!res.ok) return

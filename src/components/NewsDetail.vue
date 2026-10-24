@@ -19,7 +19,7 @@
         <span v-if="currentNews.metadata.source" class="repost-banner">转载文章</span>
         <h1>{{ currentNews.metadata.title }}</h1>
         <div class="news-meta">
-          <time :datetime="currentNews.metadata.date">{{ formatDate(currentNews.metadata.date) }}</time>
+          <time :datetime="currentNews.metadata.date">{{ formatDateLong(currentNews.metadata.date) }}</time>
           <span>发布部门：{{ currentNews.metadata.author }}</span>
         </div>
       </header>
@@ -50,6 +50,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import NewsGenerator from '@/utils/news-generator.js'
+import { formatDate } from '@/utils/date.js'
+import { applyPageMeta } from '@/utils/meta.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -60,6 +62,16 @@ const loading = ref(true)
 onMounted(async () => {
   try {
     currentNews.value = await NewsGenerator.getNewsBySlug(route.params.slug)
+    const news = currentNews.value
+    if (news) {
+      applyPageMeta({
+        title: `${news.metadata.title} - 平南县中学`,
+        description: news.metadata.summary || news.metadata.excerpt,
+        path: `/news/${news.metadata.slug}`,
+        // 仅使用站点绝对路径或完整 URL 的封面；裸相对路径（src/assets）由构建哈希处理，不能直接拼域名
+        image: /^(https?:|\/)/.test(news.metadata.cover || '') ? news.metadata.cover : undefined,
+      })
+    }
   } catch (error) {
     console.error('Failed to load news:', error)
   } finally {
@@ -76,13 +88,7 @@ const goBack = () => {
   }
 }
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
+const formatDateLong = (value) => formatDate(value, { long: true })
 </script>
 
 <style scoped>

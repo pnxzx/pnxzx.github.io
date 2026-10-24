@@ -26,7 +26,7 @@
           </template>
           <span v-else-if="isAuto" class="auto-label">站内发起</span>
           <span class="dot">·</span>
-          <time :datetime="topic.created_at">{{ formatDate(topic.created_at) }}</time>
+          <time :datetime="topic.created_at">{{ formatDateLong(topic.created_at) }}</time>
           <span v-if="topic.category" class="dot">·</span>
           <span v-if="topic.category" class="category">{{ topic.category.emoji }} {{ topic.category.name }}</span>
         </div>
@@ -68,9 +68,10 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import GiscusComment from '@/components/GiscusComment.vue'
 import { isGiscusCreated } from '@/utils/forum.js'
+import { formatDate } from '@/utils/date.js'
+import { applyPageMeta } from '@/utils/meta.js'
+import { DISCUSSIONS_API } from '@/config/site.js'
 
-const REPO_OWNER = 'pnxzx'
-const REPO_NAME = 'pnxzx.github.io'
 
 const route = useRoute()
 const router = useRouter()
@@ -103,7 +104,7 @@ async function loadTopic(number) {
   firstComment.value = null
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions/${number}`,
+      `${DISCUSSIONS_API}/${number}`,
       { headers: { Accept: 'application/vnd.github+json' } }
     )
     if (res.status === 404) throw new Error('话题不存在或已被删除')
@@ -112,7 +113,11 @@ async function loadTopic(number) {
     topic.value = await res.json()
     // giscus mapping=title：先设置 document.title 再渲染 giscus，
     // 使评论区绑定到与本话题同名的 Discussion
-    document.title = topic.value.title
+    applyPageMeta({
+      title: `${topic.value.title} - 平南县中学交流论坛`,
+      description: `平南县中学交流论坛话题：${topic.value.title}`,
+      path: `/forum/${number}`,
+    })
     // 站内发起的话题：真实作者是第一条评论人
     if (isGiscusCreated(topic.value)) {
       firstComment.value = await fetchFirstComment(number)
@@ -128,7 +133,7 @@ async function loadTopic(number) {
 async function fetchFirstComment(number) {
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions/${number}/comments?per_page=1`,
+      `${DISCUSSIONS_API}/${number}/comments?per_page=1`,
       { headers: { Accept: 'application/vnd.github+json' } }
     )
     if (!res.ok) return null
@@ -147,9 +152,7 @@ const goBack = () => {
   }
 }
 
-const formatDate = (s) => new Date(s).toLocaleDateString('zh-CN', {
-  year: 'numeric', month: 'long', day: 'numeric'
-})
+const formatDateLong = (value) => formatDate(value, { long: true })
 
 onMounted(() => loadTopic(route.params.number))
 watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') loadTopic(n) })

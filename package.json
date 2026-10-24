@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "commit": "cz"
   },
   "packageManager": "yarn@4.9.1",
   "dependencies": {
@@ -31,11 +32,6 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "dependenciesMeta": {
-    "vue@3.5.20": {
-      "unplugged": true
     }
   }
 }

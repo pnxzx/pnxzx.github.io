@@ -87,14 +87,16 @@
 
 <script setup>
 // 论坛列表页：读取仓库 GitHub Discussions（匿名 REST API，60次/小时/IP 限流）
-// 发帖跳转 GitHub 新建 Discussion 页；回帖由详情页内嵌 giscus 承载
+// 用 sessionStorage 做 5 分钟缓存，先展示缓存再后台刷新，显著降低限流概率
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { isGiscusCreated } from '@/utils/forum.js'
+import { formatDate } from '@/utils/date.js'
+import { DISCUSSIONS_API, NEW_DISCUSSION_URL } from '@/config/site.js'
 
-const REPO_OWNER = 'pnxzx'
-const REPO_NAME = 'pnxzx.github.io'
 const PER_PAGE = 20
+const CACHE_KEY = 'forum:discussions:v1'
+const CACHE_TTL = 5 * 60 * 1000
 
 const router = useRouter()
 const discussions = ref([])
@@ -103,11 +105,31 @@ const loadingMore = ref(false)
 const error = ref('')
 const page = ref(1)
 const hasMore = ref(false)
-// https://github.com/orgs/pnxzx/discussions/new?category=q-a
-const newDiscussionUrl = `https://github.com/orgs/${REPO_OWNER}/discussions/new?category=q-a`
+
+const newDiscussionUrl = NEW_DISCUSSION_URL
+
+function readCache() {
+  try {
+    const raw = sessionStorage.getItem(CACHE_KEY)
+    if (!raw) return null
+    const { ts, items } = JSON.parse(raw)
+    if (!Array.isArray(items) || Date.now() - ts > CACHE_TTL) return null
+    return items
+  } catch {
+    return null
+  }
+}
+
+function writeCache(items) {
+  try {
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items }))
+  } catch {
+    /* 隐私模式等场景写入失败，忽略 */
+  }
+}
 
 async function fetchDiscussions(pageNum) {
-  const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions?per_page=${PER_PAGE}&page=${pageNum}`
+  const url = `${DISCUSSIONS_API}?per_page=${PER_PAGE}&page=${pageNum}`
   const res = await fetch(url, {
     headers: { Accept: 'application/vnd.github+json' }
   })
@@ -126,6 +148,7 @@ async function loadMore() {
     discussions.value.push(...items)
     page.value += 1
     hasMore.value = items.length === PER_PAGE
+    writeCache(discussions.value)
   } catch (e) {
     console.error(e)
   } finally {
@@ -135,15 +158,22 @@ async function loadMore() {
 
 const openTopic = (number) => router.push(`/forum/${number}`)
 
-const formatDate = (s) => new Date(s).toLocaleDateString('zh-CN')
-
 onMounted(async () => {
+  // 1) 先渲染缓存，避免白屏与重复请求
+  const cached = readCache()
+  if (cached) {
+    discussions.value = cached
+    hasMore.value = cached.length === PER_PAGE
+    loading.value = false
+  }
+  // 2) 后台刷新
   try {
     const items = await fetchDiscussions(1)
     discussions.value = items
     hasMore.value = items.length === PER_PAGE
+    writeCache(items)
   } catch (e) {
-    error.value = e.message
+    if (!cached) error.value = e.message
   } finally {
     loading.value = false
   }

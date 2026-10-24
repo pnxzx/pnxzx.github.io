@@ -17,6 +17,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { formatDate } from '@/utils/date.js'
 
 const props = defineProps({
   news: {
@@ -34,9 +35,6 @@ const navigateToDetail = () => {
   })
 }
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('zh-CN')
-}
 </script>
 
 <style scoped>
