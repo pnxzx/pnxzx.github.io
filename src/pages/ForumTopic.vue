@@ -15,13 +15,16 @@
       <header class="topic-header">
         <h1>{{ topic.title }}</h1>
         <div class="topic-meta">
-          <img class="avatar" :src="topic.user?.avatar_url" alt="" />
-          <a
-            class="author"
-            :href="topic.user?.html_url"
-            target="_blank"
-            rel="noopener noreferrer"
-          >{{ topic.user?.login }}</a>
+          <template v-if="displayAuthor">
+            <img class="avatar" :src="displayAuthor.avatar_url" alt="" />
+            <a
+              class="author"
+              :href="displayAuthor.html_url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >{{ displayAuthor.login }}</a>
+          </template>
+          <span v-else-if="isAuto" class="auto-label">站内发起</span>
           <span class="dot">·</span>
           <time :datetime="topic.created_at">{{ formatDate(topic.created_at) }}</time>
           <span v-if="topic.category" class="dot">·</span>
@@ -29,7 +32,11 @@
         </div>
       </header>
 
-      <div class="topic-body markdown-body" v-html="renderedBody"></div>
+      <!-- giscus 自动建帖的"正文"是页面元数据垃圾，不展示 -->
+      <p v-if="isAuto && !firstComment" class="auto-hint placeholder-state">
+        本帖由站内评论创建，正文见下方评论区。
+      </p>
+      <div v-if="!isAuto" class="topic-body markdown-body" v-html="renderedBody"></div>
 
       <div class="topic-github-link">
         <a
@@ -60,6 +67,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import GiscusComment from '@/components/GiscusComment.vue'
+import { isGiscusCreated } from '@/utils/forum.js'
 
 const REPO_OWNER = 'pnxzx'
 const REPO_NAME = 'pnxzx.github.io'
@@ -68,8 +76,15 @@ const route = useRoute()
 const router = useRouter()
 
 const topic = ref(null)
+const firstComment = ref(null)
 const loading = ref(true)
 const error = ref('')
+
+// giscus 站内自动建帖：作者显示为第一条评论人（真实发帖者）
+const isAuto = computed(() => isGiscusCreated(topic.value))
+const displayAuthor = computed(() =>
+  isAuto.value ? firstComment.value?.user ?? null : topic.value?.user ?? null
+)
 
 // marked 基本配置（论坛内容同样需要 XSS 过滤）
 marked.setOptions({ breaks: true, gfm: true, async: false })
@@ -85,6 +100,7 @@ async function loadTopic(number) {
   loading.value = true
   error.value = ''
   topic.value = null
+  firstComment.value = null
   try {
     const res = await fetch(
       `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions/${number}`,
@@ -97,10 +113,29 @@ async function loadTopic(number) {
     // giscus mapping=title：先设置 document.title 再渲染 giscus，
     // 使评论区绑定到与本话题同名的 Discussion
     document.title = topic.value.title
+    // 站内发起的话题：真实作者是第一条评论人
+    if (isGiscusCreated(topic.value)) {
+      firstComment.value = await fetchFirstComment(number)
+    }
   } catch (e) {
     error.value = e.message
   } finally {
     loading.value = false
+  }
+}
+
+// 取最早一条评论（REST 默认升序），失败不影响页面
+async function fetchFirstComment(number) {
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions/${number}/comments?per_page=1`,
+      { headers: { Accept: 'application/vnd.github+json' } }
+    )
+    if (!res.ok) return null
+    const comments = await res.json()
+    return comments[0] ?? null
+  } catch {
+    return null
   }
 }
 
@@ -186,6 +221,20 @@ watch(() => route.params.number, (n) => { if (n && route.name === 'ForumTopic') 
 
 .author:hover {
   text-decoration: underline;
+}
+
+.auto-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.6em;
+}
+
+.auto-hint {
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
 }
 
 .dot {
