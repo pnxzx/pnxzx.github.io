@@ -107,7 +107,7 @@ function sanitizeHtml(html) {
   DOMPurify.addHook('uponSanitizeElement', (node, data) => {
     if (data.tagName !== 'iframe') return
     const src = node.getAttribute('src') || ''
-    let host = ''
+    let host
     try {
       const parsed = new URL(src)
       if (parsed.protocol !== 'https:') throw new Error('insecure')
@@ -187,7 +187,7 @@ class MarkdownProcessor {
   }
 
   generateExcerpt(content, maxLength = 150) {
-    const plainText = content.replace(/[#*`\[\]]/g, '').trim()
+    const plainText = content.replace(/[#*`[\]]/g, '').trim()
     return plainText.length > maxLength
       ? plainText.substring(0, maxLength) + '...'
       : plainText

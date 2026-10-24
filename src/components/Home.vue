@@ -32,11 +32,10 @@
   <transition name="content-enter">
     <section
       v-if="contentActive"
-      class="content-section"
       ref="contentSection"
+      class="content-section"
     >
-
-      <div class="content-wrapper">
+<div class="content-wrapper">
         <button class="back-button" @click="resetAnimation">
           <svg class="icon" viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
             <path d="M12 8 18 14H6z" fill="currentColor" />
@@ -100,7 +99,6 @@
       </div>
     </section>
   </transition>
-
 </template>
 
 <script setup>

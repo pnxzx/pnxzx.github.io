@@ -239,7 +239,6 @@ function buildTurndown(pendingImages) {
 
 // 中文序号小节 → Markdown 标题
 function promoteHeadings(md) {
-  const NO_PUNCT = /[。！？，,；;：:]/
   return md.split('\n').map(line => {
     const bare = line.replace(/\*\*/g, '').trim()
     const m1 = /^([一二三四五六七八九十]{1,3})\s*、\s*([^。！？，,；;：:]{1,22}?)$/.exec(bare)

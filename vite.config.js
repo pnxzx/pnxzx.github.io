@@ -78,6 +78,7 @@ function generateSitemap() {
 function ghPagesFallback() {
   return {
     name: 'gh-pages-fallback',
+    apply: 'build', // 避免 vitest/dev 触发
     closeBundle() {
       cpSync(path.join(DIST, 'index.html'), path.join(DIST, '404.html'))
       writeFileSync(path.join(DIST, 'sitemap.xml'), generateSitemap(), 'utf8')

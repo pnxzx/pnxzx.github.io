@@ -11,10 +11,10 @@
         </select>
         <input
           v-model="searchQuery"
-          @input="applyFilters"
           placeholder="搜索新闻..."
           aria-label="搜索新闻标题、摘要或标签"
           class="search-input"
+          @input="applyFilters"
         />
       </div>
     </div>
