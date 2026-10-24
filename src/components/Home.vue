@@ -185,7 +185,7 @@ const resetAnimation = () => {
 .cta-button {
   padding: 12px 24px;
   background: rgba(255, 255, 255, 0.9);
-  color: var(--color-primary);
+  color: #005bac;
   border: none;
   border-radius: 50px;
   font-weight: bold;
@@ -219,13 +219,13 @@ const resetAnimation = () => {
 }
 
 .explore-header h2 {
-  color: var(--color-primary);
+  color: #005bac;
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin: 0 0 0.5rem;
 }
 
 .explore-sub {
-  color: var(--color-text-muted);
+  color: #888;
   font-size: 0.95rem;
   margin: 0;
   letter-spacing: 0.1em;
@@ -244,7 +244,7 @@ const resetAnimation = () => {
   align-items: center;
   gap: 0.35rem;
   padding: 1.4rem 0.75rem;
-  background: var(--color-bg-page);
+  background: #f6f8fa;
   border: 1px solid transparent;
   border-radius: 10px;
   text-decoration: none;
@@ -253,25 +253,25 @@ const resetAnimation = () => {
 }
 
 .explore-card:hover {
-  border-color: var(--color-primary-border);
-  background: var(--color-primary-soft);
+  border-color: rgba(0, 91, 172, 0.35);
+  background: rgba(0, 91, 172, 0.05);
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 91, 172, 0.12);
 }
 
 .card-icon {
-  color: var(--color-primary);
+  color: #005bac;
   margin-bottom: 0.25rem;
 }
 
 .card-title {
   font-weight: 600;
-  color: var(--color-text-strong);
+  color: #333;
   font-size: 0.95rem;
 }
 
 .card-desc {
-  color: var(--color-text-faint);
+  color: #999;
   font-size: 0.8rem;
 }
 
@@ -286,7 +286,7 @@ const resetAnimation = () => {
   top: auto;
   right: 20px;
   padding: 8px 16px;
-  background: var(--color-primary);
+  background: #005bac;
   color: white;
   border: none;
   border-radius: 20px;

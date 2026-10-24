@@ -78,13 +78,13 @@ const githubUrl = ref('https://github.com/pnxzx/pnxzx.github.io'); // 替换为�
   padding: 20px;
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  color: var(--color-text-strong);
+  color: #333;
 }
 
 h1 {
   text-align: center;
   margin-bottom: 30px;
-  color: var(--color-text-strong);
+  color: #2c3e50;
 }
 
 .disclaimer-section {
@@ -93,13 +93,13 @@ h1 {
 
 h2 {
   font-size: 1.2em;
-  color: var(--color-primary);
-  border-bottom: 1px solid var(--color-border);
+  color: #3498db;
+  border-bottom: 1px solid #eee;
   padding-bottom: 5px;
 }
 
 a {
-  color: var(--color-primary);
+  color: #3498db;
   text-decoration: none;
 }
 
@@ -109,7 +109,7 @@ a:hover {
 
 .update-date {
   font-size: 0.9em;
-  color: var(--color-text-muted);
+  color: #7f8c8d;
   text-align: right;
   margin-top: 30px;
 }

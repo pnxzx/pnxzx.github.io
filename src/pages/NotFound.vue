@@ -38,13 +38,13 @@ const goBack = () => {
 .code {
   font-size: clamp(4rem, 12vw, 7rem);
   font-weight: 700;
-  color: var(--color-primary);
+  color: #005bac;
   line-height: 1;
   margin: 0;
 }
 
 .message {
-  color: var(--color-text-muted);
+  color: #666;
   margin: 0;
 }
 
@@ -56,10 +56,10 @@ const goBack = () => {
 
 .btn {
   padding: 0.6rem 1.4rem;
-  border: 1px solid var(--color-primary);
+  border: 1px solid #005bac;
   border-radius: 4px;
-  background: var(--color-bg-card);
-  color: var(--color-primary);
+  background: #fff;
+  color: #005bac;
   font-size: 0.95rem;
   cursor: pointer;
   text-decoration: none;
@@ -71,11 +71,11 @@ const goBack = () => {
 }
 
 .btn.primary {
-  background: var(--color-primary);
+  background: #005bac;
   color: #fff;
 }
 
 .btn.primary:hover {
-  background: var(--color-primary-dark);
+  background: #004a8c;
 }
 </style>

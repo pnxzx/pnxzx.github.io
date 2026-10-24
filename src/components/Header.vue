@@ -35,7 +35,7 @@ const menuOpen = ref(false)
 
 <style scoped>
 .header {
-  background: var(--color-primary);
+  background: #005bac;
   color: #fff;
   display: flex;
   align-items: center;

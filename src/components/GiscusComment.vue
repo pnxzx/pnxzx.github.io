@@ -58,9 +58,9 @@ onMounted(() => {
 .giscus-unconfigured {
   text-align: center;
   padding: 2rem;
-  color: var(--color-text-faint);
+  color: #999;
   font-size: 0.9rem;
-  background: var(--color-bg-soft);
+  background: #f9f9f9;
   border-radius: 4px;
 }
 </style>
