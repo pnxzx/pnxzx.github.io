@@ -1,0 +1,1 @@
+function n(t,{long:a=!1}={}){const e=new Date(t);return Number.isNaN(e.getTime())?"":a?e.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric"}):e.toLocaleDateString("zh-CN")}export{n as f};
