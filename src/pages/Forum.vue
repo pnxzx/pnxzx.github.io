@@ -41,8 +41,11 @@
             </span>
           </div>
           <div class="topic-meta">
-            <img class="topic-avatar" :src="topic.user?.avatar_url" alt="" loading="lazy" />
-            <span>{{ topic.user?.login }}</span>
+            <template v-if="!isGiscusCreated(topic)">
+              <img class="topic-avatar" :src="topic.user?.avatar_url" alt="" loading="lazy" />
+              <span>{{ topic.user?.login }}</span>
+            </template>
+            <span v-else class="auto-label">站内发起</span>
             <span class="dot">·</span>
             <span>{{ formatDate(topic.created_at) }}</span>
           </div>
@@ -87,6 +90,7 @@
 // 发帖跳转 GitHub 新建 Discussion 页；回帖由详情页内嵌 giscus 承载
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { isGiscusCreated } from '@/utils/forum.js'
 
 const REPO_OWNER = 'pnxzx'
 const REPO_NAME = 'pnxzx.github.io'
@@ -255,6 +259,15 @@ onMounted(async () => {
 
 .dot {
   color: #ccc;
+}
+
+.auto-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.05em 0.5em;
 }
 
 .topic-stats {

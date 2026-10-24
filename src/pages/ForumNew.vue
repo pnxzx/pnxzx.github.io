@@ -64,7 +64,7 @@
 // 标题输入后 document.title 即为话题标题，giscus 评论区发出的
 // 第一条评论会自动创建同名 Discussion；随后轮询 REST API 按标题
 // 找到新讨论编号并跳转 /forum/:number。
-import { ref, watch, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import GiscusComment from '@/components/GiscusComment.vue'
 
@@ -134,9 +134,22 @@ function stopWaiting() {
   if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
 }
 
+// giscus 建帖时会把 <meta name="description"> 写进讨论正文，
+// 换成中性说明，避免站内话题带上全站免责声明
+let prevDescription = null
+onMounted(() => {
+  const meta = document.querySelector('meta[name="description"]')
+  if (meta) {
+    prevDescription = meta.getAttribute('content')
+    meta.setAttribute('content', '由平南县中学交流论坛站内发起的话题')
+  }
+})
+
 onUnmounted(() => {
   stopWaiting()
   if (!published.value) document.title = PREV_TITLE
+  const meta = document.querySelector('meta[name="description"]')
+  if (meta && prevDescription !== null) meta.setAttribute('content', prevDescription)
 })
 
 const goBack = () => {
