@@ -1,57 +1,45 @@
 <template>
-  <li
-    class="news-item"
-    @click="navigateToDetail"
-    tabindex="0"
-    @keydown.enter="navigateToDetail"
-    role="article"
-    :aria-labelledby="'news-title-' + news.metadata.slug"
-  >
-    <span :id="'news-title-' + news.metadata.slug" class="news-title">
-      <span v-if="news.metadata.source" class="repost-badge">转</span>
-      {{ news.metadata.title }}
-    </span>
-    <span class="news-date">{{ formatDate(news.metadata.date) }}</span>
+  <li class="news-item">
+    <router-link class="news-item-link" :to="{ name: 'NewsDetail', params: { slug: news.metadata.slug } }">
+      <span class="news-title">
+        <span v-if="news.metadata.source" class="repost-badge">转</span>
+        {{ news.metadata.title }}
+      </span>
+      <span class="news-date">{{ formatDate(news.metadata.date) }}</span>
+    </router-link>
   </li>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router'
 import { formatDate } from '@/utils/date.js'
 
-const props = defineProps({
+defineProps({
   news: {
     type: Object,
     required: true
   }
 })
-
-const router = useRouter()
-
-const navigateToDetail = () => {
-  router.push({
-    name: 'NewsDetail',
-    params: { slug: props.news.metadata.slug }
-  })
-}
-
 </script>
 
 <style scoped>
 .news-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.news-item-link {
   display: flex;
   justify-content: space-between;
   padding: 0.75em 0;
-  border-bottom: 1px solid var(--color-border);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
 }
 
-.news-item:hover {
+.news-item-link:hover {
   background-color: var(--color-primary-soft);
 }
 
-.news-item:active {
+.news-item-link:active {
   transform: scale(0.98);
 }
 
@@ -80,10 +68,10 @@ const navigateToDetail = () => {
 }
 
 @media (max-width: 768px) {
-  .news-item {
+  .news-item-link {
     flex-direction: column;
   }
-  
+
   .news-date {
     margin-left: 0;
     margin-top: 0.25em;

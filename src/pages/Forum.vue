@@ -25,15 +25,8 @@
       </div>
 
       <ul v-else class="topic-list">
-        <li
-          v-for="topic in discussions"
-          :key="topic.number"
-          class="topic-item"
-          role="button"
-          tabindex="0"
-          @click="openTopic(topic.number)"
-          @keydown.enter="openTopic(topic.number)"
-        >
+        <li v-for="topic in discussions" :key="topic.number" class="topic-item">
+          <router-link class="topic-item-link" :to="`/forum/${topic.number}`">
           <div class="topic-main">
             <span class="topic-title">{{ topic.title }}</span>
             <span v-if="topic.category" class="topic-category" :style="{ color: topic.category.color }">
@@ -49,9 +42,10 @@
             <span class="dot">·</span>
             <span>{{ formatDate(topic.created_at) }}</span>
           </div>
-          <div class="topic-stats">
-            <span>💬 {{ topic.comments }}</span>
-          </div>
+            <div class="topic-stats">
+              <span>💬 {{ topic.comments }}</span>
+            </div>
+          </router-link>
         </li>
       </ul>
 
@@ -89,7 +83,6 @@
 // 论坛列表页：读取仓库 GitHub Discussions（匿名 REST API，60次/小时/IP 限流）
 // 用 sessionStorage 做 5 分钟缓存，先展示缓存再后台刷新，显著降低限流概率
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { isGiscusCreated } from '@/utils/forum.js'
 import { formatDate } from '@/utils/date.js'
 import { DISCUSSIONS_API, NEW_DISCUSSION_URL } from '@/config/site.js'
@@ -98,7 +91,6 @@ const PER_PAGE = 20
 const CACHE_KEY = 'forum:discussions:v1'
 const CACHE_TTL = 5 * 60 * 1000
 
-const router = useRouter()
 const discussions = ref([])
 const loading = ref(true)
 const loadingMore = ref(false)
@@ -155,8 +147,6 @@ async function loadMore() {
     loadingMore.value = false
   }
 }
-
-const openTopic = (number) => router.push(`/forum/${number}`)
 
 onMounted(async () => {
   // 1) 先渲染缓存，避免白屏与重复请求
@@ -222,12 +212,16 @@ onMounted(async () => {
 }
 
 .topic-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topic-item-link {
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-border);
-  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   transition: background 0.15s;
 }
 
@@ -235,7 +229,7 @@ onMounted(async () => {
   border-bottom: none;
 }
 
-.topic-item:hover {
+.topic-item-link:hover {
   background: var(--color-primary-soft);
 }
 

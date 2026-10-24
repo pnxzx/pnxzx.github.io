@@ -3,7 +3,7 @@
     <div class="news-header">
       <h2 class="section-title">新闻动态</h2>
       <div class="news-controls">
-        <select v-model="selectedCategory" @change="applyFilters">
+        <select v-model="selectedCategory" aria-label="按分类筛选新闻" @change="applyFilters">
           <option value="">全部分类</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
@@ -13,6 +13,7 @@
           v-model="searchQuery"
           @input="applyFilters"
           placeholder="搜索新闻..."
+          aria-label="搜索新闻标题、摘要或标签"
           class="search-input"
         />
       </div>
@@ -26,13 +27,13 @@
       暂无新闻
     </div>
     
-    <div v-else class="news-grid">
+    <ul v-else class="news-grid">
       <NewsItem 
         v-for="item in paginatedNews" 
         :key="item.metadata.slug" 
         :news="item" 
       />
-    </div>
+    </ul>
     
     <div v-if="totalPages > 1" class="pagination">
       <button 
@@ -153,7 +154,10 @@ onMounted(() => {
 
 .news-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .loading,

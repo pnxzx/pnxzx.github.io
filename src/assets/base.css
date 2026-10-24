@@ -13,8 +13,8 @@
   /* 文字四级灰 */
   --color-text-strong: #333;    /* 标题/强调 */
   --color-text: #555;           /* 正文 */
-  --color-text-muted: #888;     /* 次要说明 */
-  --color-text-faint: #bbb;     /* 占位/禁用 */
+  --color-text-muted: #666;     /* 次要说明（4.5:1 以上，达 WCAG AA） */
+  --color-text-faint: #767676;  /* 分隔/弱化文字（4.5:1） */
 
   /* 背景与表面 */
   --color-bg-page: #f6f8fa;     /* 页面底 */
@@ -149,4 +149,42 @@ a {
   text-align: center;
   padding: 3rem 1rem;
   color: var(--color-text-muted);
+}
+
+
+/* ---------- 可访问性 ---------- */
+
+/* 键盘焦点可见 */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 跳转到主内容（仅键盘聚焦时可见） */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  padding: 0.6rem 1rem;
+  background: var(--color-primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-sm) 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

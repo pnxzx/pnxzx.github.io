@@ -1,6 +1,7 @@
 <template>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <Header />
-  <main class="router-view">
+  <main id="main-content" class="router-view">
     <router-view />
   </main>
   <Footer />
