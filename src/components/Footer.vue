@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div class="footer-content">
-      <p>© {{ year }} 平南县中学 | 地址：广西贵港市平南县平南镇城东路136号 | 电话：0775-7822153 | 邮箱：lyxyz5223@qq.com</p>
+      <p>© {{ year }} 平南县中学 | 地址：广西贵港市平南县平南镇城东路136号 | 电话：0775-7822153 | 邮编：537300</p>
       <p class="build-version" title="构建版本，用于核对线上部署">v{{ version }}</p>
     </div>
   </footer>
