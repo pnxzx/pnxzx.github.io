@@ -13,11 +13,24 @@
       </div>
     </header>
 
-    <div v-if="loading && messages.length === 0" class="placeholder-state">加载中...</div>
+    <div v-if="loading && messages.length === 0" class="skeleton-list" aria-hidden="true">
+      <div v-for="n in 2" :key="n" class="skeleton-card">
+        <div class="skeleton-head">
+          <span class="skeleton-avatar"></span>
+          <span class="skeleton-line w-30"></span>
+        </div>
+        <div class="skeleton-line w-90"></div>
+        <div class="skeleton-line w-60"></div>
+      </div>
+    </div>
 
     <div v-else-if="error" class="placeholder-state">{{ error }}</div>
 
     <div v-else-if="messages.length === 0" class="empty-state">
+      <svg class="empty-icon" viewBox="0 0 24 24" width="2.4em" height="2.4em" aria-hidden="true">
+        <path d="M4 5h16v11H9l-5 4V5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+        <path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
       <p>还没有留言，来写第一条吧。</p>
       <router-link class="primary-link" to="/guestbook/write">写第一条留言</router-link>
     </div>
@@ -335,6 +348,62 @@ onMounted(() => load())
   background: var(--color-bg-soft);
 }
 
+.empty-icon {
+  color: var(--color-text-faint);
+}
+
+/* 骨架屏 */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skeleton-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-bg-soft);
+}
+
+.skeleton-line {
+  height: 13px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-soft) 25%,
+    var(--color-border) 37%,
+    var(--color-bg-soft) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-line.w-30 { width: 30%; }
+.skeleton-line.w-60 { width: 60%; }
+.skeleton-line.w-90 { width: 90%; }
+
+@keyframes shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -380,7 +449,7 @@ onMounted(() => load())
 }
 
 .message-author {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: 500;
   text-decoration: none;
   font-size: 0.92rem;
@@ -411,13 +480,13 @@ onMounted(() => load())
 }
 
 .message-body :deep(a) {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .message-body :deep(img) {
   display: block;
   max-width: 100%;
-  max-height: 480px;
+  max-height: 380px;
   width: auto;
   height: auto;
   margin: 0.5rem 0;
@@ -461,7 +530,7 @@ onMounted(() => load())
   padding: 0;
   border: none;
   background: none;
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -474,7 +543,7 @@ onMounted(() => load())
   display: inline-flex;
   align-items: center;
   gap: 0.35em;
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-size: 0.85rem;
   text-decoration: none;
 }
