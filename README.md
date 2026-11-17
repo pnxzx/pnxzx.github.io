@@ -192,6 +192,8 @@ giscus 评论框本身不支持上传文件，可用两种方式插入图片：
 
 **图床黑名单**：在 `src/config/guestbook.js` 的 `IMAGE_HOST_BLACKLIST` 中追加域名（支持子域名），命中时图片会替换为普通链接，用于屏蔽追踪像素或恶意图床。
 
+完整实现说明（数据模型、接口、限流、安全、故障排查）见 [docs/guestbook.md](docs/guestbook.md)。
+
 ## 🌐 自动部署
 
 主分支(master)更新触发GitHub Action自动部署
