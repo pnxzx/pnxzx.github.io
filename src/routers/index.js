@@ -33,24 +33,27 @@ const routes = [
     // 标题/描述由 NewsDetail 按文章内容动态设置
   },
   {
-    path: '/forum',
-    name: 'Forum',
-    component: () => import('../pages/Forum.vue'),
-    meta: { title: '交流论坛 - 平南县中学', description: '平南县中学交流论坛：基于 GitHub Discussions 的社区讨论区。' }
+    path: '/guestbook',
+    name: 'Guestbook',
+    component: () => import('../pages/Guestbook.vue'),
+    meta: {
+      title: '留言板 - 平南县中学',
+      description: '平南县中学留言板：留下你的想法、建议与校园回忆。'
+    }
   },
   {
-    path: '/forum/new',
-    name: 'ForumNew',
-    component: () => import('../pages/ForumNew.vue'),
-    meta: { title: '发起新话题 - 平南县中学交流论坛', description: '在平南县中学交流论坛发起新话题。' }
+    path: '/guestbook/write',
+    name: 'GuestbookWrite',
+    component: () => import('../pages/GuestbookWrite.vue'),
+    meta: {
+      title: '写留言 - 平南县中学留言板',
+      description: '在平南县中学留言板发布留言。'
+    }
   },
-  {
-    path: '/forum/:number(\\d+)',
-    name: 'ForumTopic',
-    component: () => import('../pages/ForumTopic.vue'),
-    props: true
-    // 标题/描述由 ForumTopic 按话题内容动态设置
-  },
+  // 旧论坛链接重定向到留言板
+  { path: '/forum', redirect: '/guestbook' },
+  { path: '/forum/new', redirect: '/guestbook/write' },
+  { path: '/forum/:number', redirect: '/guestbook' },
   {
     path: '/contact',
     name: 'Contact',

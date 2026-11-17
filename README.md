@@ -171,6 +171,26 @@ yarn node scripts/import-wechat.mjs \
 
 > ⚠️ 注意：仅用于转载本校官方公众号的公开文章，请尊重原作者版权。
 
+## 💬 留言板
+
+留言板基于 **GitHub Discussions + giscus** 实现，无需自建后端：
+
+- 数据模型：仓库中一个固定标题的 Discussion（默认「平南县中学留言板」），**每条评论就是一条留言**
+- 列表页 `/guestbook`：通过 GitHub REST API 读取评论，按**最新在前**展示，支持分页、回复展开与会话级缓存
+- 写留言 `/guestbook/write`：内嵌 giscus，登录 GitHub 后发布；发布内容直接写入上述 Discussion
+- 旧论坛链接 `/forum/*` 会重定向到留言板
+
+### 留言中的图片
+
+两种方式都支持：
+
+1. **拖拽/粘贴上传**：直接把图片拖进 giscus 评论框，GitHub 自动托管（推荐）
+2. **外链图床**：使用 Markdown `![](https://example.com/photo.jpg)`
+
+渲染层会统一处理：`http` 自动升级为 `https`、懒加载、`no-referrer`、限制最大高度，点击图片用轻量灯箱放大查看。
+
+**图床黑名单**：在 `src/config/guestbook.js` 的 `IMAGE_HOST_BLACKLIST` 中追加域名（支持子域名），命中时图片会替换为普通链接，用于屏蔽追踪像素或恶意图床。
+
 ## 🌐 自动部署
 
 主分支(master)更新触发GitHub Action自动部署

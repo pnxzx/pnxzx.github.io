@@ -67,15 +67,15 @@
             <span class="card-desc">通知公告与校园资讯</span>
           </router-link>
 
-          <router-link class="explore-card" to="/forum">
+          <router-link class="explore-card" to="/guestbook">
             <span class="card-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="1.4em" height="1.4em">
                 <path d="M4 5h16v11H8l-4 4V5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
                 <path d="M8 9.5h8M8 12.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
               </svg>
             </span>
-            <span class="card-title">交流论坛</span>
-            <span class="card-desc">校友与同学的讨论区</span>
+            <span class="card-title">留言板</span>
+            <span class="card-desc">留言与意见反馈</span>
           </router-link>
 
           <router-link class="explore-card" to="/contact">

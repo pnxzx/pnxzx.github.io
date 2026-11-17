@@ -15,6 +15,7 @@ export default [
       globals: {
         window: 'readonly',
         document: 'readonly',
+        Element: 'readonly',
         navigator: 'readonly',
         sessionStorage: 'readonly',
         localStorage: 'readonly',
