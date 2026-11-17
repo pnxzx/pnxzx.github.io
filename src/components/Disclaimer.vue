@@ -93,13 +93,13 @@ h1 {
 
 h2 {
   font-size: 1.2em;
-  color: var(--color-primary);
+  color: var(--color-accent);
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 5px;
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-accent);
   text-decoration: none;
 }
 

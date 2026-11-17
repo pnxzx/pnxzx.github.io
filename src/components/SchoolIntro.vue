@@ -27,6 +27,6 @@
   text-indent: 2em; /* 标准中文缩进*/
   margin-bottom: 1rem; /* 段间距 */
 }
-.school-intro h2 { color: var(--color-primary); margin-bottom: 1px;}
-.school-intro h3 { color: var(--color-primary); margin-top: 1rem; }
+.school-intro h2 { color: var(--color-accent); margin-bottom: 1px;}
+.school-intro h3 { color: var(--color-accent); margin-top: 1rem; }
 </style>
