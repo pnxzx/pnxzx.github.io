@@ -22,7 +22,8 @@ const DEFAULT_TW_DESC = '平南县中学非官方网站：学校简介、新闻�
 const STATIC_PAGES = [
   { path: '/about', title: '学校简介 - 平南县中学', description: '平南县中学简介：创建于1909年的自治区示范性普通高中，百年办学历史与八棵大榕树的校园传统。' },
   { path: '/news', title: '新闻动态 - 平南县中学', description: '平南县中学新闻动态：开学通知、校园活动与官方公告。' },
-  { path: '/forum', title: '交流论坛 - 平南县中学', description: '平南县中学交流论坛：基于 GitHub Discussions 的社区讨论区。' },
+  { path: '/guestbook', title: '留言板 - 平南县中学', description: '平南县中学留言板：留下你的想法、建议与校园回忆。' },
+  { path: '/guestbook/write', title: '写留言 - 平南县中学留言板', description: '在平南县中学留言板发布留言。' },
   { path: '/contact', title: '联系我们 - 平南县中学', description: '平南县中学联系方式：地址、电话与邮箱。' },
 ]
 
@@ -65,7 +66,7 @@ function collectNewsFiles() {
 }
 
 function generateSitemap() {
-  const staticRoutes = ['/', '/about', '/news', '/forum', '/contact']
+  const staticRoutes = ['/', '/about', '/news', '/guestbook', '/contact']
   const urls = staticRoutes.map((p) => ({
     loc: `${SITE_URL}${p}`,
     changefreq: p === '/' ? 'weekly' : 'monthly',

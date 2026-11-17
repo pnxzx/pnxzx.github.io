@@ -15,6 +15,7 @@ export default [
       globals: {
         window: 'readonly',
         document: 'readonly',
+        Element: 'readonly',
         navigator: 'readonly',
         sessionStorage: 'readonly',
         localStorage: 'readonly',
@@ -24,6 +25,7 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         setTimeout: 'readonly',
+        requestAnimationFrame: 'readonly',
         clearTimeout: 'readonly',
         console: 'readonly',
         process: 'readonly',

@@ -171,6 +171,29 @@ yarn node scripts/import-wechat.mjs \
 
 > ⚠️ 注意：仅用于转载本校官方公众号的公开文章，请尊重原作者版权。
 
+## 💬 留言板
+
+留言板基于 **GitHub Discussions + giscus** 实现，无需自建后端：
+
+- 数据模型：仓库中一个固定 Discussion（当前绑定 **#17「欢迎访问pnxzx.github.io」**，可在 `src/config/guestbook.js` 的 `GUESTBOOK_DISCUSSION_NUMBER` 调整），**每条评论就是一条留言**
+- 列表页 `/guestbook`：通过 GitHub REST API 读取评论，按**最新在前**展示，支持分页、回复展开与会话级缓存
+- 写留言 `/guestbook/write`：内嵌 giscus（`number` 映射，按编号绑定，改标题也不会失联），登录 GitHub 后发布；发布内容直接写入上述 Discussion
+- 旧论坛链接 `/forum/*` 会重定向到留言板
+
+### 留言中的图片
+
+giscus 评论框本身不支持上传文件，可用两种方式插入图片：
+
+1. **外链图床**：在评论框粘贴 Markdown 图片链接 `![](https://example.com/photo.jpg)`
+2. **GitHub 托管**：在 GitHub 讨论页直接留言并使用编辑器拖拽上传（图片存于 GitHub CDN），
+   留言会同步显示在留言板
+
+渲染层会统一处理：`http` 自动升级为 `https`、懒加载、`no-referrer`、限制最大高度，点击图片用轻量灯箱放大查看。
+
+**图床黑名单**：在 `src/config/guestbook.js` 的 `IMAGE_HOST_BLACKLIST` 中追加域名（支持子域名），命中时图片会替换为普通链接，用于屏蔽追踪像素或恶意图床。
+
+完整实现说明（数据模型、接口、限流、安全、故障排查）见 [docs/guestbook.md](docs/guestbook.md)。
+
 ## 🌐 自动部署
 
 主分支(master)更新触发GitHub Action自动部署

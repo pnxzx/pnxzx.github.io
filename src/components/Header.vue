@@ -9,7 +9,7 @@
         <li><router-link to="/" @click="menuOpen = false">首页</router-link></li>
         <li><router-link to="/about" @click="menuOpen = false">学校简介</router-link></li>
         <li><router-link to="/news" @click="menuOpen = false">新闻动态</router-link></li>
-        <li><router-link to="/forum" @click="menuOpen = false">交流论坛</router-link></li>
+        <li><router-link to="/guestbook" @click="menuOpen = false">留言板</router-link></li>
         <li><router-link to="/contact" @click="menuOpen = false">联系我们</router-link></li>
       </ul>
     </nav>
@@ -35,12 +35,21 @@ const menuOpen = ref(false)
 
 <style scoped>
 .header {
-  background: var(--color-primary);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  min-height: var(--header-height);
+  box-sizing: border-box;
+  background: rgba(0, 91, 172, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0, 40, 80, 0.18);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1em 2em;
+  padding: 0 2em;
+  flex-wrap: wrap;
 }
 .header-logo {
   display: flex;
@@ -81,8 +90,7 @@ nav a.router-link-active {
 
 @media (max-width: 768px) {
   .header {
-    flex-wrap: wrap;
-    padding: 0.75em 1em;
+    padding: 0 1em;
   }
   .logo {
     height: 36px;
@@ -94,11 +102,17 @@ nav a.router-link-active {
     display: block;
   }
   nav {
-    display: none;
     flex-basis: 100%;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-height 0.25s ease,
+      opacity 0.2s ease;
   }
   nav.open {
-    display: block;
+    max-height: 320px;
+    opacity: 1;
   }
   nav ul {
     flex-direction: column;

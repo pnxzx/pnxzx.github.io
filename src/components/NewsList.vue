@@ -19,12 +19,20 @@
       </div>
     </div>
     
-    <div v-if="loading" class="loading">
-      加载中...
+    <div v-if="loading" class="skeleton-list" aria-hidden="true">
+      <div v-for="n in 3" :key="n" class="skeleton-row">
+        <div class="skeleton-line w-70"></div>
+        <div class="skeleton-line w-45"></div>
+      </div>
     </div>
-    
+
     <div v-else-if="filteredNews.length === 0" class="no-news">
-      暂无新闻
+      <svg class="empty-icon" viewBox="0 0 24 24" width="2.2em" height="2.2em" aria-hidden="true">
+        <path d="M4 5h13v14H6a2 2 0 0 1-2-2V5Zm13 3h3v9a2 2 0 0 1-2 2h-1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+        <path d="M7 9h7M7 12.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <p>{{ hasFilters ? '没有符合条件的新闻' : '暂无新闻' }}</p>
+      <button v-if="hasFilters" class="empty-action" @click="clearFilters">清除筛选</button>
     </div>
     
     <ul v-else class="news-grid">
@@ -60,6 +68,13 @@ const selectedCategory = ref('')
 const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 10
+
+const hasFilters = computed(() => Boolean(selectedCategory.value || searchQuery.value.trim()))
+
+function clearFilters() {
+  selectedCategory.value = ''
+  searchQuery.value = ''
+}
 
 const categories = computed(() => {
   const cats = new Set(news.value.map(item => item.metadata.category))
@@ -115,6 +130,8 @@ onMounted(() => {
 
 <style scoped>
 .news-list {
+  max-width: var(--container-width-wide);
+  margin: 0 auto;
   background: var(--color-bg-card);
   padding: clamp(1rem, 3vw, 2rem);
   border-radius: var(--radius-md);
@@ -160,11 +177,77 @@ onMounted(() => {
   list-style: none;
 }
 
-.loading,
 .no-news {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
   text-align: center;
-  padding: 2rem;
+  padding: 3rem 1rem;
   color: var(--color-text-muted);
+}
+
+.no-news p {
+  margin: 0;
+}
+
+.no-news .empty-icon {
+  color: var(--color-text-faint);
+}
+
+.empty-action {
+  margin-top: 0.25rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.empty-action:hover {
+  background: var(--color-bg-soft);
+}
+
+/* 骨架屏 */
+.skeleton-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-soft) 25%,
+    var(--color-border) 37%,
+    var(--color-bg-soft) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-line.w-70 {
+  width: 70%;
+}
+
+.skeleton-line.w-45 {
+  width: 45%;
+  height: 12px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 
 .pagination {
@@ -190,7 +273,7 @@ onMounted(() => {
 .pagination button.active {
   background: var(--color-primary);
   color: white;
-  border-color: var(--color-primary);
+  border-color: var(--color-accent);
 }
 
 @media (max-width: 768px) {
