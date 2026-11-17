@@ -182,10 +182,11 @@ yarn node scripts/import-wechat.mjs \
 
 ### 留言中的图片
 
-两种方式都支持：
+giscus 评论框本身不支持上传文件，可用两种方式插入图片：
 
-1. **拖拽/粘贴上传**：直接把图片拖进 giscus 评论框，GitHub 自动托管（推荐）
-2. **外链图床**：使用 Markdown `![](https://example.com/photo.jpg)`
+1. **外链图床**：在评论框粘贴 Markdown 图片链接 `![](https://example.com/photo.jpg)`
+2. **GitHub 托管**：在 GitHub 讨论页直接留言并使用编辑器拖拽上传（图片存于 GitHub CDN），
+   留言会同步显示在留言板
 
 渲染层会统一处理：`http` 自动升级为 `https`、懒加载、`no-referrer`、限制最大高度，点击图片用轻量灯箱放大查看。
 

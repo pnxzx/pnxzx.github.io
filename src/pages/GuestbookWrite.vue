@@ -13,9 +13,21 @@
     </p>
 
     <ul class="write-tips">
-      <li>支持 Markdown：**加粗**、列表、链接等。</li>
-      <li>插入图片：<strong>直接把图片拖拽或粘贴到评论框</strong>，GitHub 会自动托管。</li>
-      <li>也可以使用外链图床：<code>![](https://example.com/photo.jpg)</code></li>
+      <li>支持 Markdown：<strong>加粗</strong>、列表、链接等。</li>
+      <li>
+        插入图片：在评论框粘贴 Markdown 图片链接
+        <code>![](https://example.com/photo.jpg)</code>，可使用任意外链图床。
+      </li>
+      <li>
+        giscus 评论框不支持直接上传图片。若想用 GitHub 托管（可拖拽上传），请
+        <a class="github-link" :href="discussionUrl" target="_blank" rel="noopener noreferrer">
+          在 GitHub 讨论页直接留言
+          <svg class="icon" viewBox="0 0 24 24" width="0.9em" height="0.9em" aria-hidden="true">
+            <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+        ，留言会同步显示在留言板。
+      </li>
       <li>点击留言中的图片可查看大图。</li>
     </ul>
 
@@ -25,8 +37,14 @@
 
 <script setup>
 import GiscusComment from '@/components/GiscusComment.vue'
-import { GUESTBOOK_DISCUSSION_NUMBER, GUESTBOOK_TITLE } from '@/config/guestbook.js'
+import {
+  GUESTBOOK_DISCUSSION_NUMBER,
+  GUESTBOOK_DISCUSSION_URL,
+  GUESTBOOK_TITLE
+} from '@/config/guestbook.js'
 import { applyPageMeta } from '@/utils/meta.js'
+
+const discussionUrl = GUESTBOOK_DISCUSSION_URL
 
 // giscus 使用 number 映射绑定固定讨论 #17，与页面标题无关
 applyPageMeta({
@@ -62,6 +80,15 @@ applyPageMeta({
   color: var(--color-text);
   font-size: 0.88rem;
   line-height: 1.8;
+}
+
+.github-link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.github-link:hover {
+  text-decoration: underline;
 }
 
 .write-tips code {
