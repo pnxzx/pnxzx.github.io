@@ -89,7 +89,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { DISCUSSIONS_API } from '@/config/site.js'
 import {
-  GUESTBOOK_TITLE,
+  GUESTBOOK_DISCUSSION_NUMBER,
   COMMENTS_PAGE_SIZE,
   VISIBLE_STEP,
   CACHE_KEY,
@@ -143,15 +143,9 @@ async function fetchJson(url, failureMessage) {
   return res.json()
 }
 
-async function findDiscussionNumber() {
-  const items = await fetchJson(`${DISCUSSIONS_API}?per_page=50`, '加载留言板失败')
-  const found = items.find((item) => item.title === GUESTBOOK_TITLE)
-  return found ? found.number : null
-}
-
-async function fetchMessages(number) {
+async function fetchMessages() {
   const items = await fetchJson(
-    `${DISCUSSIONS_API}/${number}/comments?per_page=${COMMENTS_PAGE_SIZE}`,
+    `${DISCUSSIONS_API}/${GUESTBOOK_DISCUSSION_NUMBER}/comments?per_page=${COMMENTS_PAGE_SIZE}`,
     '加载留言失败'
   )
   return items
@@ -170,8 +164,7 @@ async function load(force = false) {
         loading.value = false
       }
     }
-    const number = await findDiscussionNumber()
-    const list = number ? await fetchMessages(number) : []
+    const list = await fetchMessages()
     messages.value = list
     writeCache(list)
     if (force) visible.value = VISIBLE_STEP

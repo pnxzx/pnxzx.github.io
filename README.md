@@ -175,9 +175,9 @@ yarn node scripts/import-wechat.mjs \
 
 留言板基于 **GitHub Discussions + giscus** 实现，无需自建后端：
 
-- 数据模型：仓库中一个固定标题的 Discussion（默认「平南县中学留言板」），**每条评论就是一条留言**
+- 数据模型：仓库中一个固定 Discussion（当前绑定 **#17「欢迎访问pnxzx.github.io」**，可在 `src/config/guestbook.js` 的 `GUESTBOOK_DISCUSSION_NUMBER` 调整），**每条评论就是一条留言**
 - 列表页 `/guestbook`：通过 GitHub REST API 读取评论，按**最新在前**展示，支持分页、回复展开与会话级缓存
-- 写留言 `/guestbook/write`：内嵌 giscus，登录 GitHub 后发布；发布内容直接写入上述 Discussion
+- 写留言 `/guestbook/write`：内嵌 giscus（`number` 映射，按编号绑定，改标题也不会失联），登录 GitHub 后发布；发布内容直接写入上述 Discussion
 - 旧论坛链接 `/forum/*` 会重定向到留言板
 
 ### 留言中的图片

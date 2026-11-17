@@ -13,6 +13,12 @@
 import { ref, onMounted } from 'vue'
 import { REPO_OWNER, REPO_NAME } from '@/config/site.js'
 
+const props = defineProps({
+  // title：按 document.title 绑定；number：按讨论编号绑定（推荐用于固定讨论）
+  mapping: { type: String, default: 'title' },
+  term: { type: [String, Number], default: '' }
+})
+
 const container = ref(null)
 const configured = ref(false)
 
@@ -22,7 +28,6 @@ const GISCUS_CONFIG = {
   repoId: 'R_kgDOPm-QKw',
   category: 'Q&A', // 必须与 categoryId 对应的分类名一致，否则 giscus 报错
   categoryId: 'DIC_kwDOPm-QK84Cuzjw',
-  mapping: 'title', // 按 document.title 匹配/创建讨论 —— 话题页挂载前需把标题设为话题名
   'input-position': 'top',
   lang: 'zh-CN',
   theme: 'preferred_color_scheme',
@@ -38,7 +43,8 @@ onMounted(() => {
   script.setAttribute('data-repo-id', GISCUS_CONFIG.repoId)
   script.setAttribute('data-category', GISCUS_CONFIG.category)
   script.setAttribute('data-category-id', GISCUS_CONFIG.categoryId)
-  script.setAttribute('data-mapping', GISCUS_CONFIG.mapping)
+  script.setAttribute('data-mapping', props.mapping)
+  if (props.term !== '') script.setAttribute('data-term', String(props.term))
   script.setAttribute('data-strict', '0')
   script.setAttribute('data-reactions-enabled', '1')
   script.setAttribute('data-emit-metadata', '0')

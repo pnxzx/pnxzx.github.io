@@ -19,29 +19,20 @@
       <li>点击留言中的图片可查看大图。</li>
     </ul>
 
-    <GiscusComment />
+    <GiscusComment mapping="number" :term="GUESTBOOK_DISCUSSION_NUMBER" />
   </article>
 </template>
 
 <script setup>
-import { onUnmounted } from 'vue'
 import GiscusComment from '@/components/GiscusComment.vue'
-import { GUESTBOOK_TITLE } from '@/config/guestbook.js'
+import { GUESTBOOK_DISCUSSION_NUMBER, GUESTBOOK_TITLE } from '@/config/guestbook.js'
 import { applyPageMeta } from '@/utils/meta.js'
 
-const previousTitle = document.title
-
-// giscus（mapping=title）按 document.title 绑定讨论：
-// 使用固定标题，保证所有留言都进入同一个留言板讨论
-document.title = GUESTBOOK_TITLE
+// giscus 使用 number 映射绑定固定讨论 #17，与页面标题无关
 applyPageMeta({
   title: GUESTBOOK_TITLE,
   description: '平南县中学留言板：留下你的想法与建议。',
   path: '/guestbook/write'
-})
-
-onUnmounted(() => {
-  document.title = previousTitle
 })
 </script>
 

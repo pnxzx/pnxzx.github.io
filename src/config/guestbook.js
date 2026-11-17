@@ -1,7 +1,11 @@
 // 留言板配置
 import { REPO_OWNER, REPO_NAME } from './site.js'
 
-// 固定讨论标题：giscus（mapping=title）据此创建/绑定，列表页据此查找
+// 留言板承载讨论：仓库中「欢迎访问pnxzx.github.io」的编号（#17）
+// 列表页直接按编号取评论；写留言页用 giscus number 映射绑定，重命名标题也不会失联
+export const GUESTBOOK_DISCUSSION_NUMBER = 17
+
+// 页面展示用标题
 export const GUESTBOOK_TITLE = '平南县中学留言板'
 
 // 图床黑名单：按域名匹配（含子域名）。
