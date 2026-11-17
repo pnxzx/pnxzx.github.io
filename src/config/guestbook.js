@@ -14,6 +14,10 @@ export const GUESTBOOK_TITLE = '平南县中学留言板'
 export const IMAGE_HOST_BLACKLIST = []
 
 export const COMMENTS_PAGE_SIZE = 100 // REST 单页上限
+
+// 回复折叠：超过阈值时只展示前 N 条，其余折叠
+export const REPLY_COLLAPSE_THRESHOLD = 3
+export const REPLY_COLLAPSED_COUNT = 2
 export const VISIBLE_STEP = 20 // 每次展示多少条
 export const CACHE_KEY = 'guestbook:comments:v1'
 export const CACHE_TTL = 60 * 1000 // 1 分钟

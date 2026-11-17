@@ -46,7 +46,7 @@
 
         <div v-if="message.repliesCount > 0" class="message-replies">
           <ul v-if="message.replies.length" class="reply-list">
-            <li v-for="reply in message.replies" :key="reply.id" class="reply">
+            <li v-for="reply in visibleReplies(message)" :key="reply.id" class="reply">
               <header class="message-head">
                 <img
                   class="message-avatar small"
@@ -72,6 +72,16 @@
               ></div>
             </li>
           </ul>
+          <button
+            v-if="message.replies.length > REPLY_COLLAPSE_THRESHOLD"
+            class="reply-toggle"
+            :aria-expanded="isExpanded(message.id)"
+            @click="toggleReplies(message.id)"
+          >
+            {{ isExpanded(message.id)
+              ? '收起回复'
+              : `展开其余 ${hiddenReplyCount(message)} 条回复` }}
+          </button>
           <!-- 分页未覆盖到的回复：去 GitHub 查看 -->
           <a
             v-if="message.replies.length < message.repliesCount"
@@ -106,14 +116,16 @@
 
 <script setup>
 // 留言板列表：读取固定 Discussion 的评论，按新→旧展示；发言在 /guestbook/write 的 giscus 中完成
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { DISCUSSIONS_API } from '@/config/site.js'
 import {
   GUESTBOOK_DISCUSSION_NUMBER,
   COMMENTS_PAGE_SIZE,
   VISIBLE_STEP,
   CACHE_KEY,
-  CACHE_TTL
+  CACHE_TTL,
+  REPLY_COLLAPSE_THRESHOLD,
+  REPLY_COLLAPSED_COUNT
 } from '@/config/guestbook.js'
 import { renderMarkdown } from '@/utils/renderMarkdown.js'
 import { formatDate } from '@/utils/date.js'
@@ -124,6 +136,26 @@ const loading = ref(true)
 const error = ref('')
 const visible = ref(VISIBLE_STEP)
 const lightbox = ref({ src: '', alt: '' })
+// 已展开回复的留言 id（仅本次会话内有效，不写入缓存）
+const expandedReplyIds = reactive(new Set())
+
+const isExpanded = (id) => expandedReplyIds.has(id)
+
+function toggleReplies(id) {
+  if (expandedReplyIds.has(id)) expandedReplyIds.delete(id)
+  else expandedReplyIds.add(id)
+}
+
+function hiddenReplyCount(message) {
+  return Math.max(message.replies.length - REPLY_COLLAPSED_COUNT, 0)
+}
+
+function visibleReplies(message) {
+  if (isExpanded(message.id) || message.replies.length <= REPLY_COLLAPSE_THRESHOLD) {
+    return message.replies
+  }
+  return message.replies.slice(0, REPLY_COLLAPSED_COUNT)
+}
 
 const visibleMessages = computed(() => messages.value.slice(0, visible.value))
 const hasMore = computed(() => messages.value.length > visible.value)
@@ -423,6 +455,19 @@ onMounted(() => load())
 .reply {
   padding-left: 0.75rem;
   border-left: 2px solid var(--color-border);
+}
+
+.reply-toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.reply-toggle:hover {
+  text-decoration: underline;
 }
 
 .reply-link {
