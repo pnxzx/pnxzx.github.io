@@ -1,0 +1,1 @@
+import{R as s,H as E}from"./index-3ZvVqFPd.js";const o=17,_="平南县中学留言板",t=[],O=100,c=3,a=2,L=20,T="guestbook:comments:v1",n=60*1e3,C=`https://github.com/${s}/${E}/discussions/${o}`;export{T as C,o as G,t as I,c as R,L as V,n as a,O as b,a as c,C as d,_ as e};
