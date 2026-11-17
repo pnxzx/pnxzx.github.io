@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('../components/SchoolIntro.vue'),
+    component: () => import('../pages/About.vue'),
     meta: {
       title: '学校简介 - 平南县中学',
       description: '平南县中学简介：创建于1909年的自治区示范性普通高中，百年办学历史与八棵大榕树的校园传统。'
