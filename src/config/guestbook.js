@@ -20,6 +20,3 @@ export const CACHE_TTL = 60 * 1000 // 1 分钟
 
 // 讨论页直链：在 GitHub 上直接留言可用编辑器拖拽上传图片（giscus 评论框不支持上传）
 export const GUESTBOOK_DISCUSSION_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}/discussions/${GUESTBOOK_DISCUSSION_NUMBER}`
-
-export const REPLIES_API = (commentId) =>
-  `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/discussions/comments/${commentId}/replies`

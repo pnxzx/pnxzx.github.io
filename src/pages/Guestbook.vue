@@ -3,8 +3,7 @@
     <header class="guestbook-header">
       <h2 class="section-title">留言板</h2>
       <p class="guestbook-desc">
-        欢迎留下你的想法与建议。发留言需登录 GitHub，支持 Markdown 与图片
-        （可直接拖拽上传，或使用外链图床）。点击图片可查看大图。
+        欢迎留下你的想法与建议。发留言需登录 GitHub，支持 Markdown 与外链图片。点击图片可查看大图。
       </p>
       <div class="guestbook-actions">
         <router-link class="primary-link" to="/guestbook/write">写留言</router-link>
@@ -45,11 +44,8 @@
           v-html="message.html"
         ></div>
 
-        <div v-if="message.child_comment_count > 0" class="message-replies">
-          <button v-if="!message.replies" class="ghost-button" @click="loadReplies(message)">
-            查看 {{ message.child_comment_count }} 条回复
-          </button>
-          <ul v-else class="reply-list">
+        <div v-if="message.repliesCount > 0" class="message-replies">
+          <ul v-if="message.replies.length" class="reply-list">
             <li v-for="reply in message.replies" :key="reply.id" class="reply">
               <header class="message-head">
                 <img
@@ -68,10 +64,34 @@
                   formatTime(reply.created_at)
                 }}</time>
               </header>
-              <div class="message-body" v-html="reply.html"></div>
+              <div
+                class="message-body"
+                @click="onContentClick"
+                @keydown="onContentKeydown"
+                v-html="reply.html"
+              ></div>
             </li>
           </ul>
-          <p v-if="message.repliesError" class="reply-error">回复加载失败，请稍后重试。</p>
+          <!-- 分页未覆盖到的回复：去 GitHub 查看 -->
+          <a
+            v-if="message.replies.length < message.repliesCount"
+            class="reply-link"
+            :href="message.html_url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            在 GitHub 查看其余回复
+            <svg class="icon" viewBox="0 0 24 24" width="0.9em" height="0.9em" aria-hidden="true">
+              <path
+                d="M7 17 17 7M9 7h8v8"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
         </div>
       </li>
     </ol>
@@ -93,8 +113,7 @@ import {
   COMMENTS_PAGE_SIZE,
   VISIBLE_STEP,
   CACHE_KEY,
-  CACHE_TTL,
-  REPLIES_API
+  CACHE_TTL
 } from '@/config/guestbook.js'
 import { renderMarkdown } from '@/utils/renderMarkdown.js'
 import { formatDate } from '@/utils/date.js'
@@ -148,8 +167,30 @@ async function fetchMessages() {
     `${DISCUSSIONS_API}/${GUESTBOOK_DISCUSSION_NUMBER}/comments?per_page=${COMMENTS_PAGE_SIZE}`,
     '加载留言失败'
   )
-  return items
-    .map((comment) => ({ ...comment, html: renderMarkdown(comment.body), replies: null }))
+  const rendered = items.map((comment) => ({
+    ...comment,
+    html: renderMarkdown(comment.body)
+  }))
+
+  // 评论列表接口会同时返回回复（带 parent_id）：按 parent_id 分组，
+  // 避免把回复当成顶层留言
+  const repliesByParent = new Map()
+  for (const item of rendered) {
+    if (!item.parent_id) continue
+    const key = String(item.parent_id)
+    if (!repliesByParent.has(key)) repliesByParent.set(key, [])
+    repliesByParent.get(key).push(item)
+  }
+
+  return rendered
+    .filter((item) => !item.parent_id)
+    .map((message) => ({
+      ...message,
+      replies: (repliesByParent.get(String(message.id)) || []).sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      ),
+      repliesCount: message.child_comment_count || 0
+    }))
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 }
 
@@ -172,16 +213,6 @@ async function load(force = false) {
     if (messages.value.length === 0) error.value = e.message
   } finally {
     loading.value = false
-  }
-}
-
-async function loadReplies(message) {
-  if (message.replies) return
-  try {
-    const items = await fetchJson(`${REPLIES_API(message.id)}?per_page=100`, '回复加载失败')
-    message.replies = items.map((reply) => ({ ...reply, html: renderMarkdown(reply.body) }))
-  } catch {
-    message.repliesError = true
   }
 }
 
@@ -382,7 +413,7 @@ onMounted(() => load())
 
 .reply-list {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0.5rem;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -394,10 +425,17 @@ onMounted(() => load())
   border-left: 2px solid var(--color-border);
 }
 
-.reply-error {
-  color: var(--color-danger);
+.reply-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--color-primary);
   font-size: 0.85rem;
-  margin: 0.5rem 0 0;
+  text-decoration: none;
+}
+
+.reply-link:hover {
+  text-decoration: underline;
 }
 
 .load-more {

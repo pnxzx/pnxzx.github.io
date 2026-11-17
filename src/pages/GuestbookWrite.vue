@@ -9,7 +9,7 @@
 
     <h1 class="section-title">写留言</h1>
     <p class="write-desc">
-      留言保存在项目的 GitHub Discussions 中。发布需要登录 GitHub 账号（首次会弹出授权窗口）。
+      留言保存在项目的 GitHub Discussions 中。发布需要登录 GitHub 账号。
     </p>
 
     <ul class="write-tips">
@@ -19,7 +19,7 @@
         <code>![](https://example.com/photo.jpg)</code>，可使用任意外链图床。
       </li>
       <li>
-        giscus 评论框不支持直接上传图片。若想用 GitHub 托管（可拖拽上传），请
+        giscus 评论框不支持直接上传图片。若想用 GitHub 托管图片，请
         <a class="github-link" :href="discussionUrl" target="_blank" rel="noopener noreferrer">
           在 GitHub 讨论页直接留言
           <svg class="icon" viewBox="0 0 24 24" width="0.9em" height="0.9em" aria-hidden="true">
@@ -28,7 +28,6 @@
         </a>
         ，留言会同步显示在留言板。
       </li>
-      <li>点击留言中的图片可查看大图。</li>
     </ul>
 
     <GiscusComment mapping="number" :term="GUESTBOOK_DISCUSSION_NUMBER" />
